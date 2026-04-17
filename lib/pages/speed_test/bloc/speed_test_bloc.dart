@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter_internet_speed_test/flutter_internet_speed_test.dart';
+import 'package:flutter_internet_speed_test_pro/flutter_internet_speed_test_pro.dart';
 import 'package:mikrotic_customer/pages/speed_test/bloc/speed_test_event.dart';
 import 'package:mikrotic_customer/pages/speed_test/bloc/speed_test_state.dart';
 import 'package:mikrotic_customer/pages/speed_test/model/speed_test_model.dart';

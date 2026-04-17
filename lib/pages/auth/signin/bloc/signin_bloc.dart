@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:mikrotic_customer/core/api/api_result.dart';
+import 'package:mikrotic_customer/core/networking/api_result.dart';
 import 'package:mikrotic_customer/core/constants/enums.dart';
 import 'package:mikrotic_customer/pages/auth/signin/api/signin_api.dart';
 import 'package:mikrotic_customer/pages/auth/signin/bloc/signin_event.dart';

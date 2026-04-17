@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:mikrotic_customer/core/api/api_error.dart';
-import 'package:mikrotic_customer/core/api/api_result.dart';
+import 'package:mikrotic_customer/core/networking/api_error.dart';
+import 'package:mikrotic_customer/core/networking/api_result.dart';
 
 class BaseApi {
   final Dio dio;

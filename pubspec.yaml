@@ -55,14 +55,17 @@ dependencies:
   get: ^4.6.5
   go_router: ^17.1.0
   get_it: ^9.2.1
-  flutter_internet_speed_test_pro: ^0.0.2
+  flutter_internet_speed_test_pro: ^1.5.1
   network_tools: ^3.2.7
   network_info_plus: ^6.0.1
+  retrofit: ^4.9.2
+  pretty_dio_logger: ^1.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.9.5
   freezed: ^3.0.6
+  retrofit_generator: ^10.2.5
   build_runner: ^2.4.15
   flutter_launcher_icons: ^0.13.1
   # The "flutter_lints" package below contains a set of recommended lints to

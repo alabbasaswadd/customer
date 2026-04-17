@@ -1,5 +1,5 @@
-import 'package:mikrotic_customer/core/api/api_result.dart';
-import 'package:mikrotic_customer/core/api/base_api.dart';
+import 'package:mikrotic_customer/core/networking/api_result.dart';
+import 'package:mikrotic_customer/core/networking/base_api.dart';
 import 'package:mikrotic_customer/core/constants/api_routes.dart';
 import 'package:mikrotic_customer/pages/auth/signin/model/signin_request_model.dart';
 import 'package:mikrotic_customer/pages/auth/signin/model/signin_response_model.dart';

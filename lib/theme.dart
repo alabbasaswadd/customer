@@ -3,39 +3,69 @@ import 'core/constants/colors.dart';
 
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
+
   colorScheme: ColorScheme(
     brightness: Brightness.light,
     primary: AppColors.kPrimaryColor,
     onPrimary: AppColors.kWhiteColor,
     primaryContainer: AppColors.kSecondColor,
-    onPrimaryContainer: AppColors.kBlackColor,
+    onPrimaryContainer: AppColors.kWhiteColor,
+
     secondary: AppColors.kSecondColor,
-    onSecondary: AppColors.kPrimaryColor,
+    onSecondary: AppColors.kWhiteColor,
     secondaryContainer: AppColors.kThirtColor,
     onSecondaryContainer: AppColors.kBlackColor,
+
     tertiary: AppColors.kThirtColor,
-    onTertiary: AppColors.kPrimaryColor,
+    onTertiary: AppColors.kWhiteColor,
+
     error: AppColors.kRedColor,
     onError: AppColors.kWhiteColor,
     errorContainer: AppColors.kRedColor.withOpacity(0.1),
     onErrorContainer: AppColors.kRedColor,
+
     surface: AppColors.kWhiteColor,
     onSurface: AppColors.kBlackColor,
+
     surfaceVariant: AppColors.kGreyColor.withOpacity(0.1),
     outline: AppColors.kGreyColor,
+
     background: AppColors.kWhiteColor,
     onBackground: AppColors.kBlackColor,
+
     shadow: Colors.black.withOpacity(0.2),
+
     inverseSurface: AppColors.kBlackColor,
     onInverseSurface: AppColors.kWhiteColor,
     inversePrimary: AppColors.kPrimaryColor,
+
     surfaceTint: AppColors.kPrimaryColor,
     scrim: Colors.black.withOpacity(0.5),
   ),
+
   scaffoldBackgroundColor: AppColors.kWhiteColor,
   cardColor: AppColors.kWhiteColor,
   dialogBackgroundColor: AppColors.kWhiteColor,
+
   iconTheme: const IconThemeData(color: AppColors.kPrimaryColor),
+
+  appBarTheme: const AppBarTheme(
+    backgroundColor: AppColors.kPrimaryColor,
+    elevation: 0,
+    centerTitle: true,
+    iconTheme: IconThemeData(color: Colors.white),
+  ),
+
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.kPrimaryColor,
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+  ),
+
   textTheme: const TextTheme(
     titleLarge: TextStyle(
       fontSize: 25,
@@ -49,45 +79,80 @@ ThemeData lightTheme = ThemeData(
       fontFamily: "Cairo-Bold",
       color: Colors.black,
     ),
-    bodySmall: TextStyle(fontSize: 15, color: Colors.grey),
+    bodySmall: TextStyle(
+      fontSize: 15,
+      color: Colors.grey,
+    ),
   ),
 );
 
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
+
   colorScheme: ColorScheme(
     brightness: Brightness.dark,
     primary: AppColors.kPrimaryColorDarkMode,
     onPrimary: AppColors.kWhiteColor,
-    primaryContainer: AppColors.kThirtColorDarkMode,
+
+    primaryContainer: AppColors.kSecondColorDarkMode,
     onPrimaryContainer: AppColors.kWhiteColor,
+
     secondary: AppColors.kSecondColorDarkMode,
     onSecondary: AppColors.kWhiteColor,
+
     secondaryContainer: AppColors.kThirtColorDarkMode,
     onSecondaryContainer: AppColors.kWhiteColor,
+
     tertiary: AppColors.kThirtColorDarkMode,
     onTertiary: AppColors.kWhiteColor,
+
     error: AppColors.kRedColor,
     onError: AppColors.kWhiteColor,
     errorContainer: AppColors.kRedColor.withOpacity(0.2),
     onErrorContainer: AppColors.kRedColor,
-    surface: AppColors.kPrimaryColorDarkMode,
+
+    surface: const Color(0xFF0A192F),
     onSurface: AppColors.kWhiteColor,
+
     surfaceVariant: AppColors.kSecondColorDarkMode,
     outline: AppColors.kGreyColor,
-    background: AppColors.kPrimaryColorDarkMode,
+
+    background: const Color(0xFF0A192F),
     onBackground: AppColors.kWhiteColor,
+
     shadow: Colors.black.withOpacity(0.5),
+
     inverseSurface: AppColors.kWhiteColor,
     onInverseSurface: AppColors.kBlackColor,
     inversePrimary: AppColors.kPrimaryColor,
+
     surfaceTint: AppColors.kPrimaryColor,
     scrim: Colors.black.withOpacity(0.5),
   ),
-  scaffoldBackgroundColor: AppColors.kPrimaryColorDarkMode,
+
+  scaffoldBackgroundColor: const Color(0xFF0A192F),
   cardColor: AppColors.kSecondColorDarkMode,
-  dialogBackgroundColor: AppColors.kPrimaryColorDarkMode,
-  iconTheme: IconThemeData(color: AppColors.kWhiteColor),
+  dialogBackgroundColor: const Color(0xFF0A192F),
+
+  iconTheme: const IconThemeData(color: Colors.white),
+
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xFF0D47A1),
+    elevation: 0,
+    centerTitle: true,
+    iconTheme: IconThemeData(color: Colors.white),
+  ),
+
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.kPrimaryColorDarkMode,
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+  ),
+
   textTheme: const TextTheme(
     titleLarge: TextStyle(
       fontSize: 25,
@@ -101,8 +166,12 @@ ThemeData darkTheme = ThemeData(
       fontFamily: "Cairo-Bold",
       color: Colors.white,
     ),
-    bodySmall: TextStyle(fontSize: 15, color: Colors.grey),
+    bodySmall: TextStyle(
+      fontSize: 15,
+      color: Colors.grey,
+    ),
   ),
+
   switchTheme: const SwitchThemeData(
     thumbColor: MaterialStatePropertyAll(Colors.white),
   ),
