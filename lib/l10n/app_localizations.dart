@@ -370,6 +370,152 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan complete'**
   String get scan_complete;
+
+  // Home Feature Strings
+
+  /// No description provided for @home.
+  String get home;
+
+  /// No description provided for @features.
+  String get features;
+
+  /// No description provided for @settings.
+  String get settings;
+
+  /// No description provided for @hello_user.
+  String get hello_user;
+
+  /// No description provided for @home_subtitle.
+  String get home_subtitle;
+
+  /// No description provided for @current_balance.
+  String get current_balance;
+
+  /// No description provided for @recharge.
+  String get recharge;
+
+  /// No description provided for @subscription.
+  String get subscription;
+
+  /// No description provided for @subscription_active.
+  String get subscription_active;
+
+  /// No description provided for @subscription_expired.
+  String get subscription_expired;
+
+  /// No description provided for @subscription_expired_message.
+  String get subscription_expired_message;
+
+  /// No description provided for @time_remaining.
+  String get time_remaining;
+
+  /// No description provided for @days.
+  String get days;
+
+  /// No description provided for @hours.
+  String get hours;
+
+  /// No description provided for @minutes.
+  String get minutes;
+
+  /// No description provided for @seconds.
+  String get seconds;
+
+  /// No description provided for @renew_subscription.
+  String get renew_subscription;
+
+  /// No description provided for @error_occurred.
+  String get error_occurred;
+
+  /// No description provided for @retry.
+  String get retry;
+
+  /// No description provided for @features_subtitle.
+  String get features_subtitle;
+
+  /// No description provided for @invoices.
+  String get invoices;
+
+  /// No description provided for @support.
+  String get support;
+
+  /// No description provided for @settings_subtitle.
+  String get settings_subtitle;
+
+  /// No description provided for @account_settings.
+  String get account_settings;
+
+  /// No description provided for @profile.
+  String get profile;
+
+  /// No description provided for @change_password.
+  String get change_password;
+
+  /// No description provided for @notifications.
+  String get notifications;
+
+  /// No description provided for @app_settings.
+  String get app_settings;
+
+  /// No description provided for @language.
+  String get language;
+
+  /// No description provided for @arabic.
+  String get arabic;
+
+  /// No description provided for @english.
+  String get english;
+
+  /// No description provided for @dark_mode.
+  String get dark_mode;
+
+  /// No description provided for @other.
+  String get other;
+
+  /// No description provided for @about.
+  String get about;
+
+  /// No description provided for @help.
+  String get help;
+
+  /// No description provided for @logout.
+  String get logout;
+
+  // Subscriptions
+  String get subscriptions;
+  String get subscriptions_subtitle;
+  String get current_plan;
+  String get popular;
+  String get month;
+  String get select_plan;
+  String get current;
+  String get plan_features;
+  String get plan_selected;
+  String get subscribe_now;
+
+  // Support
+  String get support_subtitle;
+  String get contact_support;
+  String get available_24_7;
+  String get call_us;
+  String get whatsapp;
+  String get submit_complaint;
+  String get full_name;
+  String get phone_number;
+  String get subject;
+  String get message;
+  String get submit;
+  String get name_required;
+  String get phone_required;
+  String get phone_invalid;
+  String get subject_required;
+  String get message_required;
+  String get message_too_short;
+  String get complaint_submitted;
+
+  // Quick Actions
+  String get quick_actions;
+  String get usage_history;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

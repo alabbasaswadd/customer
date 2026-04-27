@@ -1,20 +1,21 @@
+import 'package:mikrotic_customer/core/constants/model/error_model.dart';
 import 'package:mikrotic_customer/core/networking/api_result.dart';
-import 'package:mikrotic_customer/core/networking/base_api.dart';
-import 'package:mikrotic_customer/core/constants/api_routes.dart';
+import 'package:mikrotic_customer/core/networking/api_service.dart';
 import 'package:mikrotic_customer/pages/auth/signin/model/signin_request_model.dart';
 import 'package:mikrotic_customer/pages/auth/signin/model/signin_response_model.dart';
 
 class SigninApi {
-  final BaseApi api;
+  final ApiService _apiService;
 
-  SigninApi(this.api);
-  Future<ApiResult<SigninResponseModel>> signin({
-    required SigninRequestModel request,
-  }) {
-    return api.post(
-      ApiRoutes.signin,
-      data: request.toJson(),
-      fromJson: (json) => SigninResponseModel.fromJson(json),
-    );
+  SigninApi(this._apiService);
+  Future<ApiResult<SigninResponseModel>> signin(
+    SigninRequestModel request,
+  ) async {
+    try {
+      final response = await _apiService.login(request);
+      return ApiResult.success(response);
+    } catch (e) {
+      return ApiResult.failure(ErrorModel(message: e.toString(), errors: {}));
+    }
   }
 }

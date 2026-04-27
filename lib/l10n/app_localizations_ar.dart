@@ -149,4 +149,207 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scan_complete => 'اكتمل الفحص';
+
+  // Home Feature Strings
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get features => 'الخدمات';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get hello_user => 'مرحباً';
+
+  @override
+  String get home_subtitle => 'مرحباً بك في تطبيقك';
+
+  @override
+  String get current_balance => 'الرصيد الحالي';
+
+  @override
+  String get recharge => 'شحن';
+
+  @override
+  String get subscription => 'الاشتراك';
+
+  @override
+  String get subscription_active => 'نشط';
+
+  @override
+  String get subscription_expired => 'منتهي';
+
+  @override
+  String get subscription_expired_message => 'انتهى اشتراكك، يرجى التجديد';
+
+  @override
+  String get time_remaining => 'الوقت المتبقي';
+
+  @override
+  String get days => 'يوم';
+
+  @override
+  String get hours => 'ساعة';
+
+  @override
+  String get minutes => 'دقيقة';
+
+  @override
+  String get seconds => 'ثانية';
+
+  @override
+  String get renew_subscription => 'تجديد الاشتراك';
+
+  @override
+  String get error_occurred => 'حدث خطأ';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get features_subtitle => 'استكشف خدماتنا المتاحة';
+
+  @override
+  String get invoices => 'الفواتير';
+
+  @override
+  String get support => 'الدعم الفني';
+
+  @override
+  String get settings_subtitle => 'تخصيص إعدادات التطبيق';
+
+  @override
+  String get account_settings => 'إعدادات الحساب';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get change_password => 'تغيير كلمة المرور';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get app_settings => 'إعدادات التطبيق';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get dark_mode => 'الوضع الداكن';
+
+  @override
+  String get other => 'أخرى';
+
+  @override
+  String get about => 'حول التطبيق';
+
+  @override
+  String get help => 'المساعدة';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  // Subscriptions
+  @override
+  String get subscriptions => 'الباقات';
+
+  @override
+  String get subscriptions_subtitle => 'اختر الباقة المناسبة لك';
+
+  @override
+  String get current_plan => 'باقتك الحالية';
+
+  @override
+  String get popular => 'الأكثر شعبية';
+
+  @override
+  String get month => 'شهر';
+
+  @override
+  String get select_plan => 'اختيار';
+
+  @override
+  String get current => 'الحالية';
+
+  @override
+  String get plan_features => 'مميزات الباقة';
+
+  @override
+  String get plan_selected => 'تم اختيار الباقة بنجاح';
+
+  @override
+  String get subscribe_now => 'اشترك الآن';
+
+  // Support
+  @override
+  String get support_subtitle => 'نحن هنا لمساعدتك';
+
+  @override
+  String get contact_support => 'تواصل معنا';
+
+  @override
+  String get available_24_7 => 'متاحون على مدار الساعة';
+
+  @override
+  String get call_us => 'اتصل بنا';
+
+  @override
+  String get whatsapp => 'واتساب';
+
+  @override
+  String get submit_complaint => 'أرسل شكوى';
+
+  @override
+  String get full_name => 'الاسم الكامل';
+
+  @override
+  String get phone_number => 'رقم الهاتف';
+
+  @override
+  String get subject => 'الموضوع';
+
+  @override
+  String get message => 'الرسالة';
+
+  @override
+  String get submit => 'إرسال';
+
+  @override
+  String get name_required => 'الرجاء إدخال الاسم';
+
+  @override
+  String get phone_required => 'الرجاء إدخال رقم الهاتف';
+
+  @override
+  String get phone_invalid => 'رقم الهاتف غير صحيح';
+
+  @override
+  String get subject_required => 'الرجاء إدخال الموضوع';
+
+  @override
+  String get message_required => 'الرجاء إدخال الرسالة';
+
+  @override
+  String get message_too_short => 'الرسالة قصيرة جداً';
+
+  @override
+  String get complaint_submitted => 'تم إرسال الشكوى بنجاح';
+
+  // Quick Actions
+  @override
+  String get quick_actions => 'إجراءات سريعة';
+
+  @override
+  String get usage_history => 'سجل الاستخدام';
 }

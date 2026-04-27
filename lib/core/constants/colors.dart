@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   // 🔹 Light Mode (Blue Theme)
   static const Color kPrimaryColor = Color(0xFF1565C0); // أزرق أساسي
+  // static const Color kPrimaryColor = Colors.orange; // أزرق أساسي
   static const Color kSecondColor = Color(0xFF1976D2); // أزرق متوسط
   static const Color kThirtColor = Color(0xFF42A5F5); // أزرق فاتح
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mikrotic_customer/core/di/service_locator.dart';
+import 'package:mikrotic_customer/core/di/dependency_injection.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 import 'package:mikrotic_customer/routes.dart';
 import 'package:mikrotic_customer/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  init();
+  initDI();
   runApp(const MyApp());
 }
 

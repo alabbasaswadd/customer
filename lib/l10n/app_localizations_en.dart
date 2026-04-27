@@ -149,4 +149,207 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scan_complete => 'Scan complete';
+
+  // Home Feature Strings
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get features => 'Features';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get hello_user => 'Hello';
+
+  @override
+  String get home_subtitle => 'Welcome to your app';
+
+  @override
+  String get current_balance => 'Current Balance';
+
+  @override
+  String get recharge => 'Recharge';
+
+  @override
+  String get subscription => 'Subscription';
+
+  @override
+  String get subscription_active => 'Active';
+
+  @override
+  String get subscription_expired => 'Expired';
+
+  @override
+  String get subscription_expired_message => 'Your subscription has expired, please renew';
+
+  @override
+  String get time_remaining => 'Time Remaining';
+
+  @override
+  String get days => 'Days';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get minutes => 'Minutes';
+
+  @override
+  String get seconds => 'Seconds';
+
+  @override
+  String get renew_subscription => 'Renew Subscription';
+
+  @override
+  String get error_occurred => 'An error occurred';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get features_subtitle => 'Explore our available services';
+
+  @override
+  String get invoices => 'Invoices';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get settings_subtitle => 'Customize your app settings';
+
+  @override
+  String get account_settings => 'Account Settings';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get change_password => 'Change Password';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get app_settings => 'App Settings';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get dark_mode => 'Dark Mode';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get help => 'Help';
+
+  @override
+  String get logout => 'Logout';
+
+  // Subscriptions
+  @override
+  String get subscriptions => 'Subscriptions';
+
+  @override
+  String get subscriptions_subtitle => 'Choose the plan that suits you';
+
+  @override
+  String get current_plan => 'Current Plan';
+
+  @override
+  String get popular => 'Popular';
+
+  @override
+  String get month => 'month';
+
+  @override
+  String get select_plan => 'Select';
+
+  @override
+  String get current => 'Current';
+
+  @override
+  String get plan_features => 'Plan Features';
+
+  @override
+  String get plan_selected => 'Plan selected successfully';
+
+  @override
+  String get subscribe_now => 'Subscribe Now';
+
+  // Support
+  @override
+  String get support_subtitle => 'We are here to help you';
+
+  @override
+  String get contact_support => 'Contact Support';
+
+  @override
+  String get available_24_7 => 'Available 24/7';
+
+  @override
+  String get call_us => 'Call Us';
+
+  @override
+  String get whatsapp => 'WhatsApp';
+
+  @override
+  String get submit_complaint => 'Submit Complaint';
+
+  @override
+  String get full_name => 'Full Name';
+
+  @override
+  String get phone_number => 'Phone Number';
+
+  @override
+  String get subject => 'Subject';
+
+  @override
+  String get message => 'Message';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get name_required => 'Please enter your name';
+
+  @override
+  String get phone_required => 'Please enter your phone number';
+
+  @override
+  String get phone_invalid => 'Invalid phone number';
+
+  @override
+  String get subject_required => 'Please enter the subject';
+
+  @override
+  String get message_required => 'Please enter your message';
+
+  @override
+  String get message_too_short => 'Message is too short';
+
+  @override
+  String get complaint_submitted => 'Complaint submitted successfully';
+
+  // Quick Actions
+  @override
+  String get quick_actions => 'Quick Actions';
+
+  @override
+  String get usage_history => 'Usage History';
 }

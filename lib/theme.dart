@@ -60,9 +60,7 @@ ThemeData lightTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.kPrimaryColor,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
 
@@ -79,10 +77,7 @@ ThemeData lightTheme = ThemeData(
       fontFamily: "Cairo-Bold",
       color: Colors.black,
     ),
-    bodySmall: TextStyle(
-      fontSize: 15,
-      color: Colors.grey,
-    ),
+    bodySmall: TextStyle(fontSize: 15, color: Colors.grey),
   ),
 );
 
@@ -147,9 +142,7 @@ ThemeData darkTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.kPrimaryColorDarkMode,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
 
@@ -166,10 +159,7 @@ ThemeData darkTheme = ThemeData(
       fontFamily: "Cairo-Bold",
       color: Colors.white,
     ),
-    bodySmall: TextStyle(
-      fontSize: 15,
-      color: Colors.grey,
-    ),
+    bodySmall: TextStyle(fontSize: 15, color: Colors.grey),
   ),
 
   switchTheme: const SwitchThemeData(

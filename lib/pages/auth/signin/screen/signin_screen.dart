@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mikrotic_customer/core/components/app_button.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
 import 'package:mikrotic_customer/core/components/app_text_form_field.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/core/constants/images.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
+import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -16,16 +17,9 @@ class SigninScreen extends StatefulWidget {
 
 class _SigninScreenState extends State<SigninScreen>
     with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isLoading = false;
-
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -54,43 +48,30 @@ class _SigninScreenState extends State<SigninScreen>
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
     _animationController.dispose();
     super.dispose();
   }
 
-  void _handleSignIn() {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
-      // TODO: Implement sign in logic
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final size = MediaQuery.of(context).size;
     final t = AppLocalizations.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Container(
-            height: size.height - MediaQuery.of(context).padding.top,
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: SlideTransition(
                 position: _slideAnimation,
                 child: Form(
-                  key: _formKey,
+                  key: context.read<SigninCubit>().formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Logo Section
-                      _buildLogoSection(isDark),
+                      _buildLogoSection(),
 
                       const SizedBox(height: 32),
 
@@ -121,14 +102,12 @@ class _SigninScreenState extends State<SigninScreen>
     );
   }
 
-  Widget _buildLogoSection(bool isDark) {
+  Widget _buildLogoSection() {
     return Container(
       width: 120,
       height: 120,
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.kSecondColorDarkMode
-            : AppColors.kSecondColor.withOpacity(0.3),
+        color: AppColors.kSecondColorDarkMode,
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
@@ -176,7 +155,7 @@ class _SigninScreenState extends State<SigninScreen>
         // Username Field
         AppTextFormField(
           label: t.username,
-          controller: _usernameController,
+          controller: context.read<SigninCubit>().usernameController,
           icon: Icons.person_outline_rounded,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.next,
@@ -193,19 +172,17 @@ class _SigninScreenState extends State<SigninScreen>
         // Password Field
         AppTextFormField(
           label: t.password,
-          controller: _passwordController,
+          controller: context.read<SigninCubit>().passwordController,
           icon: Icons.lock_outline_rounded,
-          obscureText: _obscurePassword,
+          // obscureText: _obscurePassword,
           textInputAction: TextInputAction.done,
           suffixIcon: IconButton(
-            icon: Icon(
-              _obscurePassword
-                  ? Icons.visibility_outlined
-                  : Icons.visibility_off_outlined,
+            icon: const Icon(
+              Icons.visibility_off_outlined,
               color: AppColors.kPrimaryColor,
             ),
             onPressed: () {
-              setState(() => _obscurePassword = !_obscurePassword);
+              // setState(() => _obscurePassword = !_obscurePassword);
             },
           ),
           validator: (value) {
@@ -217,7 +194,7 @@ class _SigninScreenState extends State<SigninScreen>
             }
             return null;
           },
-          onFieldSubmitted: (_) => _handleSignIn(),
+          // onFieldSubmitted: (_) => _handleSignIn(),
         ),
       ],
     );
@@ -248,8 +225,8 @@ class _SigninScreenState extends State<SigninScreen>
       width: double.infinity,
       child: AppButton(
         text: t.signin,
-        onPressed: _handleSignIn,
-        isLoading: _isLoading,
+        onPressed: () {},
+        // isLoading: _isLoading,
         height: 54,
         borderRadius: 12,
         icon: Icons.login_rounded,
