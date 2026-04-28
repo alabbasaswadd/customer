@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_state.dart';
 import 'package:mikrotic_customer/pages/home/model/user_model.dart';
@@ -117,10 +118,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
               builder: (context, child) {
                 return Transform.translate(
                   offset: Offset(0, -30 * (1 - _headerAnimation.value)),
-                  child: Opacity(
-                    opacity: _headerAnimation.value,
-                    child: child,
-                  ),
+                  child: Opacity(opacity: _headerAnimation.value, child: child),
                 );
               },
               child: GreetingHeader(
@@ -204,12 +202,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   }
 
   void _onRecharge() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('شحن الرصيد'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    context.push('/payment');
   }
 
   void _onRenew() {

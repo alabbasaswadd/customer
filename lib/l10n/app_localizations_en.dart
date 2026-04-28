@@ -352,4 +352,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usage_history => 'Usage History';
+
+  // Payment
+  @override
+  String get enter_amount => 'Enter Amount';
+
+  @override
+  String get payment_method => 'Payment Method';
+
+  @override
+  String get pay_now => 'Pay Now';
+
+  @override
+  String get secure_payment => 'Secure Payment';
+
+  @override
+  String get payment_secure_note => 'Your payment information is encrypted and secure';
+
+  @override
+  String get payment_successful => 'Payment Successful!';
+
+  @override
+  String get balance_recharged => 'Your balance has been recharged';
+
+  @override
+  String get done => 'Done';
 }

@@ -516,6 +516,16 @@ abstract class AppLocalizations {
   // Quick Actions
   String get quick_actions;
   String get usage_history;
+
+  // Payment
+  String get enter_amount;
+  String get payment_method;
+  String get pay_now;
+  String get secure_payment;
+  String get payment_secure_note;
+  String get payment_successful;
+  String get balance_recharged;
+  String get done;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

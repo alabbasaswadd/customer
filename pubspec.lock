@@ -257,14 +257,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  csv:
-    dependency: transitive
-    description:
-      name: csv
-      sha256: "63ed2871dd6471193dffc52c0e6c76fb86269c00244d244297abbb355c84a86e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -273,14 +265,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
-  dart_ping:
-    dependency: transitive
-    description:
-      name: dart_ping
-      sha256: "2f5418d0a5c64e53486caaac78677b25725b1e13c33c5be834ce874ea18bd24f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.0.1"
   dart_style:
     dependency: transitive
     description:
@@ -329,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  ffi_leak_tracker:
+    dependency: transitive
+    description:
+      name: ffi_leak_tracker
+      sha256: "4093d4ef9ca06ffe2786e73bfb25e22aa92112b9bb4ec941f11e3e6b61489a97"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   file:
     dependency: transitive
     description:
@@ -805,14 +797,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  multicast_dns:
-    dependency: transitive
-    description:
-      name: multicast_dns
-      sha256: de72ada5c3db6fdd6ad4ae99452fe05fb403c4bb37c67ceb255ddd37d2b5b1eb
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.3"
   native_toolchain_c:
     dependency: transitive
     description:
@@ -833,26 +817,18 @@ packages:
     dependency: "direct main"
     description:
       name: network_info_plus
-      sha256: f926b2ba86aa0086a0dfbb9e5072089bc213d854135c1712f1d29fc89ba3c877
+      sha256: f424bad71994a1dc8594b00a6f71a665f7714ee7b32d397656d592c030d8555f
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.4"
+    version: "8.1.0"
   network_info_plus_platform_interface:
     dependency: transitive
     description:
       name: network_info_plus_platform_interface
-      sha256: "7e7496a8a9d8136859b8881affc613c4a21304afeb6c324bcefc4bd0aff6b94b"
+      sha256: "210b58064bc08e04b3a2b608f1f999cf768871fbd531961dc33a91720869d182"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
-  network_tools:
-    dependency: "direct main"
-    description:
-      name: network_tools
-      sha256: "4297d21ebc28dd81f55d6f64e18271e736fd965dc6d03f8ad737389fe6c9463a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.7"
+    version: "3.1.0"
   nm:
     dependency: transitive
     description:
@@ -1037,14 +1013,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  process_run:
-    dependency: transitive
-    description:
-      name: process_run
-      sha256: "3d5335d17003a7c2fd5148be2d313f5b84244ab2e625162fdd44b4aaa48bea66"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.3+1"
   protobuf:
     dependency: transitive
     description:
@@ -1226,14 +1194,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.6"
-  sqflite_common_ffi:
-    dependency: transitive
-    description:
-      name: sqflite_common_ffi
-      sha256: c59fcdc143839a77581f7a7c4de018e53682408903a0a0800b95ef2dc4033eff
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0+2"
   sqflite_darwin:
     dependency: transitive
     description:
@@ -1250,14 +1210,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
-  sqlite3:
-    dependency: transitive
-    description:
-      name: sqlite3
-      sha256: f8f8ba7f9454f2761d4b416e030c4528ebc45e9290798d848f4dc08890c42a7c
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.7"
   stack_trace:
     dependency: transitive
     description:
@@ -1398,10 +1350,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: d7cb55e04cd34096cd3a79b3330245f54cb96a370a1c27adb3c84b917de8b08e
+      sha256: ba7d5750e3441caa1bbe31d9e516348fcf8dfcb32aa29ef87a844a59f4d1f1d0
       url: "https://pub.dev"
     source: hosted
-    version: "5.15.0"
+    version: "6.1.0"
   xdg_directories:
     dependency: transitive
     description:

@@ -38,11 +38,11 @@ class _SupportTabState extends State<SupportTab>
 
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
-      ),
-    );
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+          ),
+        );
 
     _animationController.forward();
   }
@@ -254,9 +254,7 @@ class _SupportTabState extends State<SupportTab>
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
-        ),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
         boxShadow: [
           BoxShadow(
             color: theme.shadowColor.withOpacity(0.05),
@@ -293,49 +291,7 @@ class _SupportTabState extends State<SupportTab>
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            AppTextFormField(
-              label: t.full_name,
-              controller: cubit.nameController,
-              icon: Icons.person_outline_rounded,
-              textInputAction: TextInputAction.next,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return t.name_required;
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AppTextFormField(
-              label: t.phone_number,
-              controller: cubit.phoneController,
-              icon: Icons.phone_outlined,
-              keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.next,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return t.phone_required;
-                }
-                if (value.length < 10) {
-                  return t.phone_invalid;
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            AppTextFormField(
-              label: t.subject,
-              controller: cubit.subjectController,
-              icon: Icons.subject_rounded,
-              textInputAction: TextInputAction.next,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return t.subject_required;
-                }
-                return null;
-              },
-            ),
+
             const SizedBox(height: 16),
             AppTextFormField(
               label: t.message,

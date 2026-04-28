@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mikrotic_customer/pages/auth/signin/api/signin_api.dart';
 import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
+import 'package:mikrotic_customer/pages/features/connected_devices/api/connected_devices_api.dart';
+import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connected_devices_cubit.dart';
 import 'package:mikrotic_customer/pages/home/api/home_api.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
@@ -26,9 +28,13 @@ Future<void> initDI() async {
   //! HomeApi
   getIt.registerLazySingleton(() => HomeApi());
 
+  //! ConnectedDevicesApi
+  getIt.registerLazySingleton(() => ConnectedDevicesApi());
+
   //! Cubit
   getIt.registerFactory(() => SigninCubit(getIt()));
   getIt.registerFactory(() => HomeCubit(getIt()));
   getIt.registerFactory(() => SubscriptionsCubit(getIt()));
   getIt.registerFactory(() => SupportCubit(getIt()));
+  getIt.registerFactory(() => ConnectedDevicesCubit(getIt()));
 }

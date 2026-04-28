@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class QuickActionsWidget extends StatelessWidget {
                   icon: Icons.devices_rounded,
                   label: t.connected_devices,
                   color: Colors.green,
-                  onTap: () {},
+                  onTap: () => context.push('/connected-devices'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -39,7 +40,7 @@ class QuickActionsWidget extends StatelessWidget {
                   icon: Icons.speed_rounded,
                   label: t.speed_test,
                   color: Colors.blue,
-                  onTap: () {},
+                  onTap: () => context.push('/speed-test'),
                 ),
               ),
             ],
@@ -52,7 +53,7 @@ class QuickActionsWidget extends StatelessWidget {
                   icon: Icons.receipt_long_rounded,
                   label: t.invoices,
                   color: Colors.orange,
-                  onTap: () {},
+                  onTap: () => context.push('/payment'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -61,7 +62,14 @@ class QuickActionsWidget extends StatelessWidget {
                   icon: Icons.history_rounded,
                   label: t.usage_history,
                   color: Colors.purple,
-                  onTap: () {},
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.usage_history),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

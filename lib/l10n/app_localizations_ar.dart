@@ -352,4 +352,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usage_history => 'سجل الاستخدام';
+
+  // Payment
+  @override
+  String get enter_amount => 'أدخل المبلغ';
+
+  @override
+  String get payment_method => 'طريقة الدفع';
+
+  @override
+  String get pay_now => 'ادفع الآن';
+
+  @override
+  String get secure_payment => 'دفع آمن';
+
+  @override
+  String get payment_secure_note => 'معلومات الدفع الخاصة بك مشفرة وآمنة';
+
+  @override
+  String get payment_successful => 'تم الدفع بنجاح!';
+
+  @override
+  String get balance_recharged => 'تم شحن رصيدك';
+
+  @override
+  String get done => 'تم';
 }

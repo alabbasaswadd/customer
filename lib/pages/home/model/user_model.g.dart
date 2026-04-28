@@ -7,21 +7,22 @@ part of 'user_model.dart';
 // **************************************************************************
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
-      id: json['id'] as String,
-      username: json['username'] as String,
-      fullName: json['fullName'] as String,
-      balance: (json['balance'] as num).toDouble(),
-      subscription:
-          SubscriptionModel.fromJson(json['subscription'] as Map<String, dynamic>),
-    );
+  id: json['id'] as String,
+  username: json['username'] as String,
+  fullName: json['fullName'] as String,
+  balance: (json['balance'] as num).toDouble(),
+  subscription: SubscriptionModel.fromJson(
+    json['subscription'] as Map<String, dynamic>,
+  ),
+);
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
-      'id': instance.id,
-      'username': instance.username,
-      'fullName': instance.fullName,
-      'balance': instance.balance,
-      'subscription': instance.subscription.toJson(),
-    };
+  'id': instance.id,
+  'username': instance.username,
+  'fullName': instance.fullName,
+  'balance': instance.balance,
+  'subscription': instance.subscription,
+};
 
 SubscriptionModel _$SubscriptionModelFromJson(Map<String, dynamic> json) =>
     SubscriptionModel(
