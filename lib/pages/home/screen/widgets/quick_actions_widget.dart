@@ -170,9 +170,7 @@ class _SecurityOptionTile extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: color.withOpacity(0.15),
-            ),
+            border: Border.all(color: color.withOpacity(0.15)),
           ),
           child: Row(
             children: [
