@@ -18,7 +18,7 @@ class HomeLoadingWidget extends StatelessWidget {
             size: 50,
           ),
           const SizedBox(height: 20),
-          Text(
+          const Text(
             'جاري التحميل...',
             style: TextStyle(
               color: AppColors.kGreyColor,

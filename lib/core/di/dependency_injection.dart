@@ -15,10 +15,8 @@ Future<void> initDI() async {
   //! Dio (Singleton)
   getIt.registerLazySingleton(() {
     final dio = Dio();
-
     dio.options.baseUrl =
         "http://network-isp-user-api.runasp.net/network-user-api";
-
     return dio;
   });
 

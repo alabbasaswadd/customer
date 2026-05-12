@@ -171,7 +171,7 @@ class _ConnectedDevicesScreenState extends State<ConnectedDevicesScreen>
             ),
           ),
           const SizedBox(height: 16),
-          AppText(
+          const AppText(
             'Loading network info...',
             fontSize: 16,
             color: AppColors.kGreyColor,

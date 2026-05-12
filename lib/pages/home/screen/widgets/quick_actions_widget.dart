@@ -53,28 +53,165 @@ class QuickActionsWidget extends StatelessWidget {
                   icon: Icons.receipt_long_rounded,
                   label: t.invoices,
                   color: Colors.orange,
-                  onTap: () => context.push('/payment'),
+                  onTap: () => context.push('/invoice'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _QuickActionCard(
-                  icon: Icons.history_rounded,
-                  label: t.usage_history,
+                  icon: Icons.router_rounded,
+                  label: 'أمان الراوتر',
                   color: Colors.purple,
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(t.usage_history),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  },
+                  onTap: () => _showRouterSecuritySheet(context),
                 ),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+void _showRouterSecuritySheet(BuildContext context) {
+  final theme = Theme.of(context);
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (_) => Container(
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.kGreyColor.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          AppText(
+            'أمان الراوتر',
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSurface,
+          ),
+          const SizedBox(height: 6),
+          const AppText(
+            'إدارة إعدادات الأمان والشبكة',
+            fontSize: 13,
+            color: AppColors.kGreyColor,
+          ),
+          const SizedBox(height: 24),
+          _SecurityOptionTile(
+            icon: Icons.lock_reset_rounded,
+            title: 'تغيير كلمة مرور الراوتر',
+            subtitle: 'تحديث كلمة المرور لحماية الشبكة',
+            color: Colors.orange,
+            onTap: () {
+              Navigator.pop(context);
+              context.push('/change-router-password');
+            },
+            theme: theme,
+          ),
+          const SizedBox(height: 12),
+          _SecurityOptionTile(
+            icon: Icons.restart_alt_rounded,
+            title: 'إعادة ضبط الراوتر',
+            subtitle: 'إعادة تشغيل أو إعادة ضبط كاملة',
+            color: AppColors.kRedColor,
+            onTap: () {
+              Navigator.pop(context);
+              context.push('/router-reset');
+            },
+            theme: theme,
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    ),
+  );
+}
+
+class _SecurityOptionTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+  final ThemeData theme;
+
+  const _SecurityOptionTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: theme.cardColor,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: color.withOpacity(0.15),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: color, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      title,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    const SizedBox(height: 3),
+                    AppText(
+                      subtitle,
+                      fontSize: 12,
+                      color: AppColors.kGreyColor,
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: AppColors.kGreyColor.withOpacity(0.6),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

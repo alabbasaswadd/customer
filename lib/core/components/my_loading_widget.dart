@@ -5,11 +5,11 @@ import '../constants/colors.dart';
 
 class MyLoadingWidget extends StatelessWidget {
   const MyLoadingWidget({
-    Key? key,
+    super.key,
     this.color,
     this.strokeWidth = 4.0,
     this.value,
-  }) : super(key: key);
+  });
   final Color? color;
   final double strokeWidth;
   final double? value;

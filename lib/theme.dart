@@ -27,11 +27,8 @@ ThemeData lightTheme = ThemeData(
     surface: AppColors.kWhiteColor,
     onSurface: AppColors.kBlackColor,
 
-    surfaceVariant: AppColors.kGreyColor.withOpacity(0.1),
+    surfaceContainerHighest: AppColors.kGreyColor.withOpacity(0.1),
     outline: AppColors.kGreyColor,
-
-    background: AppColors.kWhiteColor,
-    onBackground: AppColors.kBlackColor,
 
     shadow: Colors.black.withOpacity(0.2),
 
@@ -45,7 +42,6 @@ ThemeData lightTheme = ThemeData(
 
   scaffoldBackgroundColor: AppColors.kWhiteColor,
   cardColor: AppColors.kWhiteColor,
-  dialogBackgroundColor: AppColors.kWhiteColor,
 
   iconTheme: const IconThemeData(color: AppColors.kPrimaryColor),
 
@@ -79,6 +75,7 @@ ThemeData lightTheme = ThemeData(
     ),
     bodySmall: TextStyle(fontSize: 15, color: Colors.grey),
   ),
+  dialogTheme: DialogThemeData(backgroundColor: AppColors.kWhiteColor),
 );
 
 ThemeData darkTheme = ThemeData(
@@ -109,11 +106,8 @@ ThemeData darkTheme = ThemeData(
     surface: const Color(0xFF0A192F),
     onSurface: AppColors.kWhiteColor,
 
-    surfaceVariant: AppColors.kSecondColorDarkMode,
+    surfaceContainerHighest: AppColors.kSecondColorDarkMode,
     outline: AppColors.kGreyColor,
-
-    background: const Color(0xFF0A192F),
-    onBackground: AppColors.kWhiteColor,
 
     shadow: Colors.black.withOpacity(0.5),
 
@@ -127,7 +121,6 @@ ThemeData darkTheme = ThemeData(
 
   scaffoldBackgroundColor: const Color(0xFF0A192F),
   cardColor: AppColors.kSecondColorDarkMode,
-  dialogBackgroundColor: const Color(0xFF0A192F),
 
   iconTheme: const IconThemeData(color: Colors.white),
 
@@ -163,6 +156,7 @@ ThemeData darkTheme = ThemeData(
   ),
 
   switchTheme: const SwitchThemeData(
-    thumbColor: MaterialStatePropertyAll(Colors.white),
+    thumbColor: WidgetStatePropertyAll(Colors.white),
   ),
+  dialogTheme: DialogThemeData(backgroundColor: const Color(0xFF0A192F)),
 );

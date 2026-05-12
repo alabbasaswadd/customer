@@ -413,7 +413,7 @@ class _PlanDetailsSheet extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle_rounded,
                       color: Colors.green,
                       size: 20,

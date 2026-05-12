@@ -48,23 +48,17 @@ class GreetingHeader extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
+            const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppText(
-                    '${t.hello_user}, $userName',
-                    fontSize: 24,
+                    // '${t.hello_user}, $userName',
+                    " رصيدك: 25\$",
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: AppColors.kWhiteColor,
                     maxLines: 1,
-                  ),
-                  const SizedBox(height: 4),
-                  AppText(
-                    t.home_subtitle,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.kWhiteColor.withOpacity(0.8),
                   ),
                 ],
               ),
@@ -103,10 +97,7 @@ class GreetingHeader extends StatelessWidget {
                 color: AppColors.kRedColor,
                 shape: BoxShape.circle,
               ),
-              constraints: const BoxConstraints(
-                minWidth: 18,
-                minHeight: 18,
-              ),
+              constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
               child: Text(
                 notificationCount > 9 ? '9+' : '$notificationCount',
                 style: const TextStyle(

@@ -96,8 +96,8 @@ class _SupportTabState extends State<SupportTab>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(t, theme),
-                  const SizedBox(height: 24),
-                  _buildContactInfo(t, theme),
+                  // const SizedBox(height: 24),
+                  // _buildContactInfo(t, theme),
                   const SizedBox(height: 24),
                   _buildComplaintForm(t, theme),
                 ],
@@ -130,90 +130,90 @@ class _SupportTabState extends State<SupportTab>
     );
   }
 
-  Widget _buildContactInfo(AppLocalizations t, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.primary.withOpacity(0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.kWhiteColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.support_agent_rounded,
-                  color: AppColors.kWhiteColor,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      t.contact_support,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.kWhiteColor,
-                    ),
-                    const SizedBox(height: 4),
-                    AppText(
-                      t.available_24_7,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.kWhiteColor.withOpacity(0.8),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: _buildContactButton(
-                  icon: Icons.phone_rounded,
-                  label: t.call_us,
-                  onTap: () {},
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildContactButton(
-                  icon: Icons.chat_rounded,
-                  label: t.whatsapp,
-                  onTap: () {},
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildContactInfo(AppLocalizations t, ThemeData theme) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(20),
+  //     decoration: BoxDecoration(
+  //       gradient: LinearGradient(
+  //         colors: [
+  //           theme.colorScheme.primary,
+  //           theme.colorScheme.primary.withOpacity(0.8),
+  //         ],
+  //         begin: Alignment.topLeft,
+  //         end: Alignment.bottomRight,
+  //       ),
+  //       borderRadius: BorderRadius.circular(20),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: theme.colorScheme.primary.withOpacity(0.3),
+  //           blurRadius: 15,
+  //           offset: const Offset(0, 5),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Row(
+  //           children: [
+  //             Container(
+  //               padding: const EdgeInsets.all(12),
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.kWhiteColor.withOpacity(0.2),
+  //                 borderRadius: BorderRadius.circular(12),
+  //               ),
+  //               child: const Icon(
+  //                 Icons.support_agent_rounded,
+  //                 color: AppColors.kWhiteColor,
+  //                 size: 28,
+  //               ),
+  //             ),
+  //             const SizedBox(width: 16),
+  //             Expanded(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   AppText(
+  //                     t.contact_support,
+  //                     fontSize: 18,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: AppColors.kWhiteColor,
+  //                   ),
+  //                   const SizedBox(height: 4),
+  //                   AppText(
+  //                     t.available_24_7,
+  //                     fontSize: 13,
+  //                     fontWeight: FontWeight.w400,
+  //                     color: AppColors.kWhiteColor.withOpacity(0.8),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 20),
+  //         Row(
+  //           children: [
+  //             Expanded(
+  //               child: _buildContactButton(
+  //                 icon: Icons.phone_rounded,
+  //                 label: t.call_us,
+  //                 onTap: () {},
+  //               ),
+  //             ),
+  //             const SizedBox(width: 12),
+  //             Expanded(
+  //               child: _buildContactButton(
+  //                 icon: Icons.chat_rounded,
+  //                 label: t.whatsapp,
+  //                 onTap: () {},
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildContactButton({
     required IconData icon,

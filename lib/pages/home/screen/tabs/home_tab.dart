@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_state.dart';
 import 'package:mikrotic_customer/pages/home/model/user_model.dart';
-import 'package:mikrotic_customer/pages/home/screen/widgets/balance_card.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/greeting_header.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_error_widget.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_loading_widget.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/subscription_card.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/quick_actions_widget.dart';
+import 'package:mikrotic_customer/pages/home/screen/widgets/wallet_section_widget.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -23,6 +23,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   late Animation<double> _headerAnimation;
   late Animation<double> _balanceAnimation;
   late Animation<double> _subscriptionAnimation;
+  late Animation<double> _walletAnimation;
   late Animation<double> _actionsAnimation;
 
   @override
@@ -55,14 +56,21 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     _subscriptionAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainAnimationController,
-        curve: const Interval(0.4, 0.7, curve: Curves.easeOutCubic),
+        curve: const Interval(0.35, 0.6, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _walletAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mainAnimationController,
+        curve: const Interval(0.5, 0.78, curve: Curves.easeOutCubic),
       ),
     );
 
     _actionsAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainAnimationController,
-        curve: const Interval(0.6, 1.0, curve: Curves.easeOutCubic),
+        curve: const Interval(0.68, 1.0, curve: Curves.easeOutCubic),
       ),
     );
   }
@@ -130,26 +138,6 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
 
             const SizedBox(height: 24),
 
-            // Balance Card
-            AnimatedBuilder(
-              animation: _balanceAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: 0.8 + (0.2 * _balanceAnimation.value),
-                  child: Opacity(
-                    opacity: _balanceAnimation.value,
-                    child: child,
-                  ),
-                );
-              },
-              child: BalanceCard(
-                balance: user.balance,
-                onRecharge: _onRecharge,
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
             // Subscription Card
             AnimatedBuilder(
               animation: _subscriptionAnimation,
@@ -165,6 +153,27 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
               child: SubscriptionCard(
                 subscription: user.subscription,
                 onRenew: _onRenew,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Wallet Section
+            AnimatedBuilder(
+              animation: _walletAnimation,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(-50 * (1 - _walletAnimation.value), 0),
+                  child: Opacity(
+                    opacity: _walletAnimation.value,
+                    child: child,
+                  ),
+                );
+              },
+              child: WalletSectionWidget(
+                balance: user.balance,
+                income: 150,
+                expenses: 200,
               ),
             ),
 
@@ -193,12 +202,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   }
 
   void _onNotificationTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('الإشعارات'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    context.push('/notifications');
   }
 
   void _onRecharge() {

@@ -123,7 +123,7 @@ class _SigninScreenState extends State<SigninScreen>
           child: Image.asset(
             AppImages.klogo,
             fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => Icon(
+            errorBuilder: (context, error, stackTrace) => const Icon(
               Icons.wifi_tethering,
               size: 60,
               color: AppColors.kPrimaryColor,

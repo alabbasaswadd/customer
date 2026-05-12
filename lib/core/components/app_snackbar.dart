@@ -224,7 +224,7 @@ class AppSnackbar {
           color: Colors.white.withOpacity(0.2),
           shape: BoxShape.circle,
         ),
-        child: Icon(Icons.close_rounded, color: Colors.white, size: 16),
+        child: const Icon(Icons.close_rounded, color: Colors.white, size: 16),
       ),
     );
   }
