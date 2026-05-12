@@ -41,7 +41,20 @@ class HomeApi {
   Future<ApiResult<bool>> submitComplaint(ComplaintModel complaint) async {
     try {
       await Future.delayed(const Duration(milliseconds: 1000));
-      // Replace with actual API call
+      return const ApiResult.success(true);
+    } catch (e) {
+      return ApiResult.failure(ErrorModel(message: e.toString(), errors: {}));
+    }
+  }
+
+  /// Submit maintenance request
+  Future<ApiResult<bool>> submitMaintenanceRequest({
+    required String issueType,
+    required String priority,
+    required String description,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 1200));
       return const ApiResult.success(true);
     } catch (e) {
       return ApiResult.failure(ErrorModel(message: e.toString(), errors: {}));

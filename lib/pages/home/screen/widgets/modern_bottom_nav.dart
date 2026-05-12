@@ -17,6 +17,7 @@ class ModernBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final compact = items.length > 4;
 
     return Container(
       decoration: BoxDecoration(
@@ -34,14 +35,24 @@ class ModernBottomNav extends StatelessWidget {
           height: 70,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment:
+                compact ? MainAxisAlignment.start : MainAxisAlignment.spaceAround,
             children: List.generate(
               items.length,
-              (index) => _NavItem(
-                item: items[index],
-                isSelected: currentIndex == index,
-                onTap: () => onTap(index),
-              ),
+              (index) => compact
+                  ? Expanded(
+                      child: _NavItem(
+                        item: items[index],
+                        isSelected: currentIndex == index,
+                        onTap: () => onTap(index),
+                        compact: true,
+                      ),
+                    )
+                  : _NavItem(
+                      item: items[index],
+                      isSelected: currentIndex == index,
+                      onTap: () => onTap(index),
+                    ),
             ),
           ),
         ),
@@ -54,11 +65,13 @@ class _NavItem extends StatefulWidget {
   final ModernNavItem item;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool compact;
 
   const _NavItem({
     required this.item,
     required this.isSelected,
     required this.onTap,
+    this.compact = false,
   });
 
   @override
@@ -112,7 +125,13 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    return widget.compact
+        ? _buildCompact(theme)
+        : _buildExpanded(theme);
+  }
 
+  // Standard pill style — used when ≤ 4 items
+  Widget _buildExpanded(ThemeData theme) {
     return GestureDetector(
       onTap: widget.onTap,
       behavior: HitTestBehavior.opaque,
@@ -136,7 +155,9 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
                 Transform.scale(
                   scale: widget.isSelected ? _scaleAnimation.value : 1.0,
                   child: Icon(
-                    widget.isSelected ? widget.item.activeIcon : widget.item.icon,
+                    widget.isSelected
+                        ? widget.item.activeIcon
+                        : widget.item.icon,
                     color: widget.isSelected
                         ? theme.colorScheme.primary
                         : AppColors.kGreyColor,
@@ -149,7 +170,8 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
                     width: widget.isSelected ? null : 0,
                     child: widget.isSelected
                         ? Padding(
-                            padding: const EdgeInsetsDirectional.only(start: 8),
+                            padding:
+                                const EdgeInsetsDirectional.only(start: 8),
                             child: AppText(
                               widget.item.label,
                               fontSize: 13,
@@ -164,6 +186,69 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
             ),
           );
         },
+      ),
+    );
+  }
+
+  // Compact icon + label-below style — used when 5+ items
+  Widget _buildCompact(ThemeData theme) {
+    return InkWell(
+      onTap: widget.onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        width: double.infinity,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: widget.isSelected
+                        ? theme.colorScheme.primary.withOpacity(0.15)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Transform.scale(
+                    scale: widget.isSelected ? _scaleAnimation.value : 1.0,
+                    child: Icon(
+                      widget.isSelected
+                          ? widget.item.activeIcon
+                          : widget.item.icon,
+                      color: widget.isSelected
+                          ? theme.colorScheme.primary
+                          : AppColors.kGreyColor,
+                      size: 22,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 200),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: widget.isSelected
+                        ? FontWeight.w700
+                        : FontWeight.w400,
+                    color: widget.isSelected
+                        ? theme.colorScheme.primary
+                        : AppColors.kGreyColor,
+                    fontFamily: 'Cairo-Bold',
+                  ),
+                  child: Text(
+                    widget.item.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mikrotic_customer/core/di/dependency_injection.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
+import 'package:mikrotic_customer/pages/home/cubit/maintenance_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/support_cubit.dart';
 import 'package:mikrotic_customer/pages/home/screen/tabs/home_tab.dart';
+import 'package:mikrotic_customer/pages/home/screen/tabs/maintenance_tab.dart';
 import 'package:mikrotic_customer/pages/home/screen/tabs/settings_tab.dart';
 import 'package:mikrotic_customer/pages/home/screen/tabs/subscriptions_tab.dart';
 import 'package:mikrotic_customer/pages/home/screen/tabs/support_tab.dart';
@@ -66,6 +68,7 @@ class _HomeNavigationState extends State<HomeNavigation>
         BlocProvider(create: (context) => getIt<HomeCubit>()),
         BlocProvider(create: (context) => getIt<SubscriptionsCubit>()),
         BlocProvider(create: (context) => getIt<SupportCubit>()),
+        BlocProvider(create: (context) => getIt<MaintenanceCubit>()),
       ],
       child: Scaffold(
         body: PageView(
@@ -75,6 +78,7 @@ class _HomeNavigationState extends State<HomeNavigation>
           children: const [
             HomeTab(),
             SubscriptionsTab(),
+            MaintenanceTab(),
             SupportTab(),
             SettingsTab(),
           ],
@@ -92,6 +96,11 @@ class _HomeNavigationState extends State<HomeNavigation>
               icon: Icons.card_membership_outlined,
               activeIcon: Icons.card_membership_rounded,
               label: t.subscriptions,
+            ),
+            ModernNavItem(
+              icon: Icons.build_outlined,
+              activeIcon: Icons.build_rounded,
+              label: 'الصيانة',
             ),
             ModernNavItem(
               icon: Icons.support_agent_outlined,

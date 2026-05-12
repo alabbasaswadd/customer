@@ -7,6 +7,7 @@ import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connect
 import 'package:mikrotic_customer/pages/home/api/home_api.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
+import 'package:mikrotic_customer/pages/home/cubit/maintenance_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/support_cubit.dart';
 
 final getIt = GetIt.instance;
@@ -34,5 +35,6 @@ Future<void> initDI() async {
   getIt.registerFactory(() => HomeCubit(getIt()));
   getIt.registerFactory(() => SubscriptionsCubit(getIt()));
   getIt.registerFactory(() => SupportCubit(getIt()));
+  getIt.registerFactory(() => MaintenanceCubit(getIt()));
   getIt.registerFactory(() => ConnectedDevicesCubit(getIt()));
 }
