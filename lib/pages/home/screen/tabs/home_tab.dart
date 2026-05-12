@@ -9,6 +9,7 @@ import 'package:mikrotic_customer/pages/home/screen/widgets/home_error_widget.da
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_loading_widget.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/subscription_card.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/quick_actions_widget.dart';
+import 'package:mikrotic_customer/pages/home/screen/widgets/subscription_ticker_widget.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/wallet_section_widget.dart';
 
 class HomeTab extends StatefulWidget {
@@ -136,7 +137,19 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
+
+            // Subscription expiry ticker
+            AnimatedBuilder(
+              animation: _balanceAnimation,
+              builder: (context, child) => Opacity(
+                opacity: _balanceAnimation.value,
+                child: child,
+              ),
+              child: SubscriptionTickerWidget(subscription: user.subscription),
+            ),
+
+            const SizedBox(height: 16),
 
             // Subscription Card
             AnimatedBuilder(

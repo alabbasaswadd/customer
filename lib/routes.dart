@@ -7,6 +7,8 @@ import 'package:mikrotic_customer/pages/features/connected_devices/screen/connec
 import 'package:mikrotic_customer/pages/features/invoice/screen/invoice_screen.dart';
 import 'package:mikrotic_customer/pages/features/payment/screen/payment_screen.dart';
 import 'package:mikrotic_customer/pages/features/notifications/screen/notifications_screen.dart';
+import 'package:mikrotic_customer/pages/features/chat/cubit/chat_cubit.dart';
+import 'package:mikrotic_customer/pages/features/chat/screen/chat_screen.dart';
 import 'package:mikrotic_customer/pages/features/router_security/screen/change_router_password_screen.dart';
 import 'package:mikrotic_customer/pages/features/router_security/screen/router_reset_screen.dart';
 import 'package:mikrotic_customer/pages/features/speed_test/screen/speed_test_screen.dart';
@@ -53,6 +55,13 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: '/chat',
+      builder: (context, state) => BlocProvider(
+        create: (context) => getIt<ChatCubit>()..loadMessages(),
+        child: const ChatScreen(),
+      ),
     ),
   ],
 );

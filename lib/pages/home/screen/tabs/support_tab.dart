@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/core/components/app_button.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
 import 'package:mikrotic_customer/core/components/app_text_form_field.dart';
@@ -96,9 +97,9 @@ class _SupportTabState extends State<SupportTab>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(t, theme),
-                  // const SizedBox(height: 24),
-                  // _buildContactInfo(t, theme),
                   const SizedBox(height: 24),
+                  _buildLiveChatCard(theme),
+                  const SizedBox(height: 16),
                   _buildComplaintForm(t, theme),
                 ],
               ),
@@ -241,6 +242,82 @@ class _SupportTabState extends State<SupportTab>
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLiveChatCard(ThemeData theme) {
+    return GestureDetector(
+      onTap: () => context.push('/chat'),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.primary.withOpacity(0.8),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.kWhiteColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(
+                Icons.support_agent_rounded,
+                color: AppColors.kWhiteColor,
+                size: 30,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText(
+                    'الدردشة مع الدعم الفني',
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.kWhiteColor,
+                  ),
+                  const SizedBox(height: 4),
+                  AppText(
+                    'تواصل مباشرة • يعمل دون إنترنت',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.kWhiteColor.withOpacity(0.85),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.kWhiteColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: AppColors.kWhiteColor,
+                size: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );

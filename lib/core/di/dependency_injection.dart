@@ -9,6 +9,8 @@ import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/maintenance_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/support_cubit.dart';
+import 'package:mikrotic_customer/pages/features/chat/repository/chat_repository.dart';
+import 'package:mikrotic_customer/pages/features/chat/cubit/chat_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -37,4 +39,6 @@ Future<void> initDI() async {
   getIt.registerFactory(() => SupportCubit(getIt()));
   getIt.registerFactory(() => MaintenanceCubit(getIt()));
   getIt.registerFactory(() => ConnectedDevicesCubit(getIt()));
+  getIt.registerLazySingleton(() => ChatRepository());
+  getIt.registerFactory(() => ChatCubit(getIt()));
 }
