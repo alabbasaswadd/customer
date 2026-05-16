@@ -1,25 +1,26 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:mikrotic_customer/core/networking/api_constans.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioFactory {
-  /// private constructor as I don't want to allow creating an instance of this class
   DioFactory._();
 
   static Dio? dio;
 
   static Dio getDio() {
-    Duration timeOut = const Duration(seconds: 30);
-
     if (dio == null) {
-      dio = Dio();
-      dio!
-        ..options.connectTimeout = timeOut
-        ..options.receiveTimeout = timeOut;
+      const timeOut = Duration(seconds: 30);
+      dio = Dio(
+        BaseOptions(
+          baseUrl: ApiConstants.apiBaseUrl,
+          connectTimeout: timeOut,
+          receiveTimeout: timeOut,
+        ),
+      );
       addDioInterceptor();
-      return dio!;
-    } else {
-      return dio!;
     }
+    return dio!;
   }
 
   // static void addDioHeaders() async {

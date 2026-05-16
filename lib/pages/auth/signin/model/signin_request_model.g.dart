@@ -8,12 +8,9 @@ part of 'signin_request_model.dart';
 
 SigninRequestModel _$SigninRequestModelFromJson(Map<String, dynamic> json) =>
     SigninRequestModel(
-      username: json['username'] as String,
+      email: json['email'] as String,
       password: json['password'] as String,
     );
 
 Map<String, dynamic> _$SigninRequestModelToJson(SigninRequestModel instance) =>
-    <String, dynamic>{
-      'username': instance.username,
-      'password': instance.password,
-    };
+    <String, dynamic>{'email': instance.email, 'password': instance.password};

@@ -6,10 +6,10 @@ part 'signin_model.g.dart';
 class SigninModel {
   final String? id;
   final String? token;
-  final String? username;
+  final String? email;
   final String? password;
 
-  SigninModel({this.id, this.token, this.username, this.password});
+  SigninModel({this.id, this.token, this.email, this.password});
 
   factory SigninModel.fromJson(Map<String, dynamic> json) {
     return _$SigninModelFromJson(json);

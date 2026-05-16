@@ -17,13 +17,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 final GoRouter router = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const HomeNavigation()),
+    GoRoute(
+      path: '/',
+      builder: (context, state) => BlocProvider(
+        create: (context) => getIt<SigninCubit>(),
+        child: const SigninScreen(),
+      ),
+    ),
     GoRoute(
       path: '/signin',
       builder: (context, state) => BlocProvider(
         create: (context) => getIt<SigninCubit>(),
         child: const SigninScreen(),
       ),
+    ),
+    GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomeNavigation(),
     ),
     GoRoute(
       path: '/speed-test',

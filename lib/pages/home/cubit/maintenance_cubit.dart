@@ -25,7 +25,6 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
       priority: priority,
       description: descriptionController.text.trim(),
     );
-
     result.when(
       success: (_) {
         descriptionController.clear();

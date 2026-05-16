@@ -8,4 +8,3 @@ class ApiError {
     return "Unexpected Error";
   }
 }
-

@@ -1,6 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mikrotic_customer/core/networking/dio_factory.dart';
 import 'package:mikrotic_customer/pages/auth/signin/api/signin_api.dart';
+import 'package:mikrotic_customer/pages/auth/signin/api/signin_api_service.dart';
 import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/api/connected_devices_api.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connected_devices_cubit.dart';
@@ -15,16 +16,12 @@ import 'package:mikrotic_customer/pages/features/chat/cubit/chat_cubit.dart';
 final getIt = GetIt.instance;
 
 Future<void> initDI() async {
-  //! Dio (Singleton)
-  getIt.registerLazySingleton(() {
-    final dio = Dio();
-    dio.options.baseUrl =
-        "http://network-isp-user-api.runasp.net/network-user-api";
-    return dio;
-  });
+  //! Dio (Singleton) - shared instance used across all API services
+  getIt.registerLazySingleton(() => DioFactory.getDio());
 
   //! SigninApi
   getIt.registerLazySingleton(() => SigninApi(getIt()));
+  getIt.registerLazySingleton(() => SigninApiService(getIt()));
 
   //! HomeApi
   getIt.registerLazySingleton(() => HomeApi());

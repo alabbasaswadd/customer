@@ -1,13 +1,13 @@
 class ApiConstants {
   static const String apiBaseUrl =
-      "http://network-isp-user-api.runasp.net/network-user-api";
+      "http://network-isp-user-api.runasp.net/network-user-api/";
 
-  static const String login = "/user-api/Account/SignIn";
-  static const String signup = "/user-api/Account/SignUp";
+  static const String signin = "user-api/Account/SignIn";
+  static const String signup = "user-api/Account/SignUp";
 
   // Connected devices endpoints
-  static const String connectedDevices = "/user-api/Network/ConnectedDevices";
-  static const String dhcpLeases = "/user-api/Network/DhcpLeases";
+  static const String connectedDevices = "user-api/Network/ConnectedDevices";
+  static const String dhcpLeases = "user-api/Network/DhcpLeases";
 }
 
 class ApiErrors {

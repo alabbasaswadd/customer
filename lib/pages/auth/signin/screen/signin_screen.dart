@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/core/components/app_button.dart';
+import 'package:mikrotic_customer/core/components/app_snackbar.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
 import 'package:mikrotic_customer/core/components/app_text_form_field.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/core/constants/images.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
+import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_state.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -55,43 +58,56 @@ class _SigninScreenState extends State<SigninScreen>
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: Form(
-                  key: context.read<SigninCubit>().formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Logo Section
-                      _buildLogoSection(),
+    return BlocListener<SigninCubit, SigninState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          success: (_) {
+            context.go('/home');
+          },
+          error: (response) {
+            AppSnackbar.showError(context, response);
+          },
+          orElse: () {},
+        );
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Form(
+                    key: context.read<SigninCubit>().formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Logo Section
+                        _buildLogoSection(),
 
-                      const SizedBox(height: 32),
+                        const SizedBox(height: 32),
 
-                      // Welcome Text
-                      _buildWelcomeSection(t!),
-                      const SizedBox(height: 40),
+                        // Welcome Text
+                        _buildWelcomeSection(t!),
+                        const SizedBox(height: 40),
 
-                      // Form Fields
-                      _buildFormSection(t),
+                        // Form Fields
+                        _buildFormSection(t),
 
-                      const SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
-                      // Forgot Password
-                      _buildForgotPasswordButton(t),
+                        // Forgot Password
+                        _buildForgotPasswordButton(t),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                      // Sign In Button
-                      _buildSignInButton(t),
-                    ],
+                        // Sign In Button
+                        _buildSignInButton(t),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -155,7 +171,7 @@ class _SigninScreenState extends State<SigninScreen>
         // Username Field
         AppTextFormField(
           label: t.username,
-          controller: context.read<SigninCubit>().usernameController,
+          controller: context.read<SigninCubit>().emailController,
           icon: Icons.person_outline_rounded,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.next,
@@ -225,10 +241,14 @@ class _SigninScreenState extends State<SigninScreen>
       width: double.infinity,
       child: AppButton(
         text: t.signin,
-        onPressed: () {},
+        onPressed: () {
+          context.read<SigninCubit>().signin();
+        },
+        isLoading: context.watch<SigninCubit>().state.maybeWhen(
+          loading: () => true,
+          orElse: () => false,
+        ),
         // isLoading: _isLoading,
-        height: 54,
-        borderRadius: 12,
         icon: Icons.login_rounded,
         padding: EdgeInsets.zero,
       ),
