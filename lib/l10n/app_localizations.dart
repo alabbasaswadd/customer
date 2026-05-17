@@ -481,6 +481,9 @@ abstract class AppLocalizations {
   /// No description provided for @logout.
   String get logout;
 
+  /// No description provided for @logout_confirmation.
+  String get logout_confirmation;
+
   // Subscriptions
   String get subscriptions;
   String get subscriptions_subtitle;

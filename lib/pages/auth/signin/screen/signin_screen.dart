@@ -64,8 +64,8 @@ class _SigninScreenState extends State<SigninScreen>
           success: (_) {
             context.go('/home');
           },
-          error: (response) {
-            AppSnackbar.showError(context, response);
+          error: (e) {
+            AppSnackbar.showError(context, e);
           },
           orElse: () {},
         );

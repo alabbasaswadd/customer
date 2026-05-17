@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mikrotic_customer/core/constants/model/error_model.dart';
-import 'package:mikrotic_customer/pages/auth/signin/model/signin_model.dart';
+import 'package:mikrotic_customer/pages/features/account/model/account_model.dart';
 
 part 'signin_response_model.g.dart';
 
 @JsonSerializable()
 class SigninResponseModel {
   final bool? succeeded;
-  final SigninModel? data;
+  final AccountModel? data;
   final ErrorModel? error;
 
   SigninResponseModel({this.succeeded, this.data, this.error});

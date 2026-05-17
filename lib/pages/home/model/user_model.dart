@@ -23,7 +23,6 @@ class UserModel {
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
-  /// Mock data for development
   factory UserModel.mock() => UserModel(
         id: '1',
         username: 'ahmed_user',
@@ -54,11 +53,12 @@ class SubscriptionModel {
 
   Map<String, dynamic> toJson() => _$SubscriptionModelToJson(this);
 
-  /// Mock data for development
   factory SubscriptionModel.mock() => SubscriptionModel(
         id: '1',
         name: 'باقة بريميوم',
-        expiryDate: DateTime.now().add(const Duration(days: 15, hours: 8, minutes: 30)),
+        expiryDate: DateTime.now().add(
+          const Duration(days: 15, hours: 8, minutes: 30),
+        ),
         speed: 100,
         speedUnit: 'Mbps',
       );

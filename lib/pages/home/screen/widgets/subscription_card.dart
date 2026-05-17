@@ -9,11 +9,7 @@ class SubscriptionCard extends StatefulWidget {
   final SubscriptionModel subscription;
   final VoidCallback? onRenew;
 
-  const SubscriptionCard({
-    super.key,
-    required this.subscription,
-    this.onRenew,
-  });
+  const SubscriptionCard({super.key, required this.subscription, this.onRenew});
 
   @override
   State<SubscriptionCard> createState() => _SubscriptionCardState();
@@ -34,7 +30,9 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {
-          _remainingTime = widget.subscription.expiryDate.difference(DateTime.now());
+          _remainingTime = widget.subscription.expiryDate.difference(
+            DateTime.now(),
+          );
           if (_remainingTime.isNegative) {
             _timer.cancel();
           }
@@ -225,9 +223,17 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
             _buildTimeSeparator(theme),
             _buildTimeUnit(hours.toString().padLeft(2, '0'), t.hours, theme),
             _buildTimeSeparator(theme),
-            _buildTimeUnit(minutes.toString().padLeft(2, '0'), t.minutes, theme),
+            _buildTimeUnit(
+              minutes.toString().padLeft(2, '0'),
+              t.minutes,
+              theme,
+            ),
             _buildTimeSeparator(theme),
-            _buildTimeUnit(seconds.toString().padLeft(2, '0'), t.seconds, theme),
+            _buildTimeUnit(
+              seconds.toString().padLeft(2, '0'),
+              t.seconds,
+              theme,
+            ),
           ],
         ),
       ],

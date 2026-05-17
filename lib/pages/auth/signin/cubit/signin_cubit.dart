@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:mikrotic_customer/core/constants/cached/cached_helper.dart';
+import 'package:mikrotic_customer/core/constants/cached/user_session.dart';
 import 'package:mikrotic_customer/core/networking/api_result.dart';
 import 'package:mikrotic_customer/core/networking/dio_factory.dart';
 import 'package:mikrotic_customer/pages/auth/signin/api/signin_api.dart';
@@ -27,8 +28,9 @@ class SigninCubit extends Cubit<SigninState> {
 
     response.when(
       success: (response) async {
-        if (response.succeeded == true && response.data?.token != null) {
-          final token = response.data!.token!;
+        if (response.succeeded == true) {
+          final token = response.data!.token;
+          UserSession.saveUser(response.data!);
           await CacheHelper.setString('token', token);
           DioFactory.setTokenIntoHeaderAfterLogin(token);
           emit(SigninState.success(response));

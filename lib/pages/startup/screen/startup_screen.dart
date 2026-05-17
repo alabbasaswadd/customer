@@ -40,11 +40,7 @@ class _StartupScreenState extends State<StartupScreen> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(AppImages.klogo, width: 120, height: 120),
-              const SizedBox(height: 32),
-              const CircularProgressIndicator(),
-            ],
+            children: [Image.asset(AppImages.klogo, width: 120, height: 120)],
           ),
         ),
       ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mikrotic_customer/core/components/app_alert_dialog.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
+import 'package:mikrotic_customer/core/constants/cached/user_session.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 
@@ -17,6 +20,12 @@ class SettingsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            AppText(
+              UserSession.user?.firstName ?? "",
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.onSurface,
+            ),
             AppText(
               t.settings,
               fontSize: 28,
@@ -91,14 +100,28 @@ class SettingsTab extends StatelessWidget {
                 _SettingsItem(
                   icon: Icons.help_outline_rounded,
                   title: t.help,
-                  onTap: () {},
+                  onTap: () {
+                  
+                  },
                 ),
                 _SettingsItem(
                   icon: Icons.logout_rounded,
                   title: t.logout,
                   iconColor: AppColors.kRedColor,
                   titleColor: AppColors.kRedColor,
-                  onTap: () {},
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (_) => AppAlertDialog(
+                      title: t.logout,
+                      content: t.logout_confirmation,
+                      onOk: () async {
+                        Navigator.pop(context);
+                        await UserSession.logout();
+                        if (context.mounted) context.go('/signin');
+                      },
+                      onNo: () => Navigator.pop(context),
+                    ),
+                  ),
                 ),
               ],
             ),

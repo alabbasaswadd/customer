@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:mikrotic_customer/core/constants/cached/cached_helper.dart';
 import 'package:mikrotic_customer/core/di/dependency_injection.dart';
 import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
 import 'package:mikrotic_customer/pages/auth/signin/screen/signin_screen.dart';
@@ -18,7 +19,17 @@ import 'package:mikrotic_customer/pages/startup/cubit/startup_cubit.dart';
 import 'package:mikrotic_customer/pages/startup/screen/startup_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+const _publicPaths = ['/', '/onboarding', '/signin'];
+
 final GoRouter router = GoRouter(
+  redirect: (context, state) async {
+    final token = await CacheHelper.getString('token');
+    final isLoggedIn = token.isNotEmpty;
+    final isPublic = _publicPaths.contains(state.uri.path);
+
+    if (!isLoggedIn && !isPublic) return '/signin';
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',

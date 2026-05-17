@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:mikrotic_customer/core/constants/cached/user_session.dart';
 import 'package:mikrotic_customer/core/networking/api_result.dart';
 import 'package:mikrotic_customer/pages/home/api/home_api.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_state.dart';
@@ -7,7 +8,7 @@ import 'package:mikrotic_customer/pages/home/model/user_model.dart';
 class HomeCubit extends Cubit<HomeState<UserModel>> {
   final HomeApi api;
 
-  HomeCubit(this.api) : super(const HomeState.initial());
+  HomeCubit(this.api) : super(const HomeState<UserModel>.initial());
 
   Future<void> loadUserProfile() async {
     emit(const HomeState.loading());
@@ -35,5 +36,10 @@ class HomeCubit extends Cubit<HomeState<UserModel>> {
         emit(HomeState.error(error.message ?? 'Unknown error'));
       },
     );
+  }
+
+  void logout() {
+    emit(const HomeState.initial());
+    UserSession.logout();
   }
 }
