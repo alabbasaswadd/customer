@@ -3,7 +3,7 @@ class ApiConstants {
       "http://network-isp-user-api.runasp.net/network-user-api/";
 
   static const String signin = "user-api/Account/SignIn";
-  static const String signup = "user-api/Account/SignUp";
+  static const String complaint = "user-api/Complaint";
 
   // Connected devices endpoints
   static const String connectedDevices = "user-api/Network/ConnectedDevices";

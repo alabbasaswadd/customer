@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mikrotic_customer/core/constants/cached/user_session.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_state.dart';
-import 'package:mikrotic_customer/pages/home/model/user_model.dart';
+import 'package:mikrotic_customer/pages/features/account/model/subscription_model.dart';
+import 'package:mikrotic_customer/pages/home/model/user_model.dart' show UserModel;
 import 'package:mikrotic_customer/pages/home/screen/widgets/greeting_header.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_error_widget.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_loading_widget.dart';
@@ -140,14 +142,19 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
             const SizedBox(height: 12),
 
             // Subscription expiry ticker
-            AnimatedBuilder(
-              animation: _balanceAnimation,
-              builder: (context, child) => Opacity(
-                opacity: _balanceAnimation.value,
-                child: child,
-              ),
-              child: SubscriptionTickerWidget(subscription: user.subscription),
-            ),
+            Builder(builder: (context) {
+              final SubscriptionModel? activeSub =
+                  UserSession.user?.subscriptions.isNotEmpty == true
+                      ? UserSession.user!.subscriptions.first
+                      : null;
+              if (activeSub == null) return const SizedBox.shrink();
+              return AnimatedBuilder(
+                animation: _balanceAnimation,
+                builder: (context, child) =>
+                    Opacity(opacity: _balanceAnimation.value, child: child),
+                child: SubscriptionTickerWidget(subscription: activeSub),
+              );
+            }),
 
             const SizedBox(height: 16),
 
@@ -164,7 +171,9 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
                 );
               },
               child: SubscriptionCard(
-                subscription: user.subscription,
+                subscription: UserSession.user?.subscriptions.isNotEmpty == true
+                    ? UserSession.user!.subscriptions.first
+                    : null,
                 onRenew: _onRenew,
               ),
             ),
@@ -177,10 +186,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
               builder: (context, child) {
                 return Transform.translate(
                   offset: Offset(-50 * (1 - _walletAnimation.value), 0),
-                  child: Opacity(
-                    opacity: _walletAnimation.value,
-                    child: child,
-                  ),
+                  child: Opacity(opacity: _walletAnimation.value, child: child),
                 );
               },
               child: WalletSectionWidget(

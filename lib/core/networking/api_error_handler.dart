@@ -65,70 +65,70 @@ class ResponseMessage {
 }
 
 extension DataSourceExtension on DataSource {
-  ApiErrorModel getFailure() {
+  ErrorModel getFailure() {
     switch (this) {
       case DataSource.NO_CONTENT:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.NO_CONTENT,
           message: ResponseMessage.NO_CONTENT,
         );
       case DataSource.BAD_REQUEST:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.BAD_REQUEST,
           message: ResponseMessage.BAD_REQUEST,
         );
       case DataSource.FORBIDDEN:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.FORBIDDEN,
           message: ResponseMessage.FORBIDDEN,
         );
       case DataSource.UNAUTORISED:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.UNAUTORISED,
           message: ResponseMessage.UNAUTORISED,
         );
       case DataSource.NOT_FOUND:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.NOT_FOUND,
           message: ResponseMessage.NOT_FOUND,
         );
       case DataSource.INTERNAL_SERVER_ERROR:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.INTERNAL_SERVER_ERROR,
           message: ResponseMessage.INTERNAL_SERVER_ERROR,
         );
       case DataSource.CONNECT_TIMEOUT:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.CONNECT_TIMEOUT,
           message: ResponseMessage.CONNECT_TIMEOUT,
         );
       case DataSource.CANCEL:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.CANCEL,
           message: ResponseMessage.CANCEL,
         );
       case DataSource.RECIEVE_TIMEOUT:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.RECIEVE_TIMEOUT,
           message: ResponseMessage.RECIEVE_TIMEOUT,
         );
       case DataSource.SEND_TIMEOUT:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.SEND_TIMEOUT,
           message: ResponseMessage.SEND_TIMEOUT,
         );
       case DataSource.CACHE_ERROR:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.CACHE_ERROR,
           message: ResponseMessage.CACHE_ERROR,
         );
       case DataSource.NO_INTERNET_CONNECTION:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.NO_INTERNET_CONNECTION,
           message: ResponseMessage.NO_INTERNET_CONNECTION,
         );
       case DataSource.DEFAULT:
-        return ApiErrorModel(
+        return ErrorModel(
           code: ResponseCode.DEFAULT,
           message: ResponseMessage.DEFAULT,
         );
@@ -137,20 +137,18 @@ extension DataSourceExtension on DataSource {
 }
 
 class ErrorHandler implements Exception {
-  late ApiErrorModel apiErrorModel;
+  late ErrorModel errorModel;
 
   ErrorHandler.handle(dynamic error) {
     if (error is DioException) {
-      // dio error so its an error from response of the API or from dio itself
-      apiErrorModel = _handleError(error);
+      errorModel = _handleError(error);
     } else {
-      // default error
-      apiErrorModel = DataSource.DEFAULT.getFailure();
+      errorModel = DataSource.DEFAULT.getFailure();
     }
   }
 }
 
-ApiErrorModel _handleError(DioException error) {
+ErrorModel _handleError(DioException error) {
   switch (error.type) {
     case DioExceptionType.connectionTimeout:
       return DataSource.CONNECT_TIMEOUT.getFailure();
@@ -162,7 +160,7 @@ ApiErrorModel _handleError(DioException error) {
       if (error.response != null &&
           error.response?.statusCode != null &&
           error.response?.statusMessage != null) {
-        return ApiErrorModel.fromJson(error.response!.data);
+        return ErrorModel.fromJson(error.response!.data);
       } else {
         return DataSource.DEFAULT.getFailure();
       }
@@ -170,7 +168,7 @@ ApiErrorModel _handleError(DioException error) {
       if (error.response != null &&
           error.response?.statusCode != null &&
           error.response?.statusMessage != null) {
-        return ApiErrorModel.fromJson(error.response!.data);
+        return ErrorModel.fromJson(error.response!.data);
       } else {
         return DataSource.DEFAULT.getFailure();
       }
@@ -179,8 +177,6 @@ ApiErrorModel _handleError(DioException error) {
     case DioExceptionType.connectionError:
       return DataSource.DEFAULT.getFailure();
     case DioExceptionType.badCertificate:
-      return DataSource.DEFAULT.getFailure();
-    case DioExceptionType.badResponse:
       return DataSource.DEFAULT.getFailure();
   }
 }

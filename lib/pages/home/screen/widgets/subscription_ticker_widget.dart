@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-import '../../model/user_model.dart';
+import 'package:mikrotic_customer/pages/features/account/model/subscription_model.dart';
 
 class SubscriptionTickerWidget extends StatefulWidget {
   final SubscriptionModel subscription;
@@ -150,11 +149,14 @@ class _TickerConfig {
   });
 
   factory _TickerConfig.from(SubscriptionModel sub) {
-    final days = sub.remainingTime.inDays;
+    final name = sub.subscriptionType.name;
+    final remaining = sub.endDate.difference(DateTime.now());
+    final isExpired = remaining.isNegative;
+    final days = remaining.inDays;
 
-    if (sub.isExpired) {
+    if (isExpired) {
       return _TickerConfig(
-        message: 'انتهى اشتراكك «${sub.name}»! يرجى التجديد الآن',
+        message: 'انتهى اشتراكك «$name»! يرجى التجديد الآن',
         icon: Icons.error_outline_rounded,
         lightBg: const Color(0xFFFFEBEE),
         darkBg: const Color(0x33D32F2F),
@@ -164,7 +166,7 @@ class _TickerConfig {
     } else if (days <= 3) {
       return _TickerConfig(
         message:
-            'تنبيه عاجل  ·  اشتراكك «${sub.name}» سينتهي خلال $days ${days == 1 ? 'يوم' : 'أيام'} — جدّد الآن',
+            'تنبيه عاجل  ·  اشتراكك «$name» سينتهي خلال $days ${days == 1 ? 'يوم' : 'أيام'} — جدّد الآن',
         icon: Icons.warning_amber_rounded,
         lightBg: const Color(0xFFFFF3E0),
         darkBg: const Color(0x33E65100),
@@ -174,7 +176,7 @@ class _TickerConfig {
     } else if (days <= 7) {
       return _TickerConfig(
         message:
-            'تذكير  ·  اشتراكك «${sub.name}» سينتهي خلال $days أيام — تأكد من التجديد في الوقت المناسب',
+            'تذكير  ·  اشتراكك «$name» سينتهي خلال $days أيام — تأكد من التجديد في الوقت المناسب',
         icon: Icons.campaign_rounded,
         lightBg: const Color(0xFFFFFDE7),
         darkBg: const Color(0x33F9A825),
@@ -183,8 +185,7 @@ class _TickerConfig {
       );
     } else {
       return _TickerConfig(
-        message:
-            'اشتراكك «${sub.name}»  ·  ينتهي خلال $days أيام',
+        message: 'اشتراكك «$name»  ·  ينتهي خلال $days أيام',
         icon: Icons.info_outline_rounded,
         lightBg: const Color(0xFFE3F2FD),
         darkBg: const Color(0x331565C0),

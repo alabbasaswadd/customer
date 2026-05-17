@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
-import 'package:mikrotic_customer/pages/home/model/user_model.dart';
+import 'package:mikrotic_customer/pages/features/account/model/subscription_model.dart';
 
 class SubscriptionCard extends StatefulWidget {
-  final SubscriptionModel subscription;
+  final SubscriptionModel? subscription;
   final VoidCallback? onRenew;
 
   const SubscriptionCard({super.key, required this.subscription, this.onRenew});
@@ -22,20 +22,23 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   @override
   void initState() {
     super.initState();
-    _remainingTime = widget.subscription.remainingTime;
+    _remainingTime = _calcRemaining();
     _startTimer();
+  }
+
+  Duration _calcRemaining() {
+    final end = widget.subscription?.endDate;
+    if (end == null) return Duration.zero;
+    final diff = end.difference(DateTime.now());
+    return diff.isNegative ? Duration.zero : diff;
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
         setState(() {
-          _remainingTime = widget.subscription.expiryDate.difference(
-            DateTime.now(),
-          );
-          if (_remainingTime.isNegative) {
-            _timer.cancel();
-          }
+          _remainingTime = _calcRemaining();
+          if (_remainingTime == Duration.zero) _timer.cancel();
         });
       }
     });
@@ -50,16 +53,17 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   @override
   void didUpdateWidget(covariant SubscriptionCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.subscription.expiryDate != widget.subscription.expiryDate) {
-      _remainingTime = widget.subscription.remainingTime;
+    if (oldWidget.subscription?.endDate != widget.subscription?.endDate) {
+      _remainingTime = _calcRemaining();
     }
   }
+
+  bool get _isExpired => widget.subscription == null || _remainingTime == Duration.zero;
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final isExpired = _remainingTime.isNegative;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -68,7 +72,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isExpired
+          color: _isExpired
               ? AppColors.kRedColor.withOpacity(0.3)
               : theme.colorScheme.primary.withOpacity(0.1),
           width: 1.5,
@@ -84,12 +88,12 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(t, theme, isExpired),
+          _buildHeader(t, theme),
           const SizedBox(height: 16),
           _buildSubscriptionName(theme),
           const SizedBox(height: 20),
-          _buildCountdown(t, theme, isExpired),
-          if (isExpired && widget.onRenew != null) ...[
+          _buildCountdown(t, theme),
+          if (_isExpired && widget.onRenew != null) ...[
             const SizedBox(height: 16),
             _buildRenewButton(t, theme),
           ],
@@ -98,20 +102,20 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     );
   }
 
-  Widget _buildHeader(AppLocalizations t, ThemeData theme, bool isExpired) {
+  Widget _buildHeader(AppLocalizations t, ThemeData theme) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: isExpired
+            color: _isExpired
                 ? AppColors.kRedColor.withOpacity(0.1)
                 : theme.colorScheme.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
-            isExpired ? Icons.warning_amber_rounded : Icons.wifi_rounded,
-            color: isExpired ? AppColors.kRedColor : theme.colorScheme.primary,
+            _isExpired ? Icons.warning_amber_rounded : Icons.wifi_rounded,
+            color: _isExpired ? AppColors.kRedColor : theme.colorScheme.primary,
             size: 24,
           ),
         ),
@@ -128,10 +132,10 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
               ),
               const SizedBox(height: 2),
               AppText(
-                isExpired ? t.subscription_expired : t.subscription_active,
+                _isExpired ? t.subscription_expired : t.subscription_active,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: isExpired ? AppColors.kRedColor : Colors.green,
+                color: _isExpired ? AppColors.kRedColor : Colors.green,
               ),
             ],
           ),
@@ -146,13 +150,15 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.speed_rounded,
+                Icons.monetization_on_outlined,
                 size: 16,
                 color: theme.colorScheme.primary,
               ),
               const SizedBox(width: 4),
               AppText(
-                '${widget.subscription.speed.toInt()} ${widget.subscription.speedUnit}',
+                widget.subscription != null
+                    ? '${widget.subscription!.subscriptionType.price.toStringAsFixed(0)} \$'
+                    : '—',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: theme.colorScheme.primary,
@@ -166,15 +172,15 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
   Widget _buildSubscriptionName(ThemeData theme) {
     return AppText(
-      widget.subscription.name,
+      widget.subscription?.subscriptionType.name ?? '—',
       fontSize: 22,
       fontWeight: FontWeight.w700,
       color: theme.colorScheme.onSurface,
     );
   }
 
-  Widget _buildCountdown(AppLocalizations t, ThemeData theme, bool isExpired) {
-    if (isExpired) {
+  Widget _buildCountdown(AppLocalizations t, ThemeData theme) {
+    if (_isExpired) {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -223,17 +229,9 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
             _buildTimeSeparator(theme),
             _buildTimeUnit(hours.toString().padLeft(2, '0'), t.hours, theme),
             _buildTimeSeparator(theme),
-            _buildTimeUnit(
-              minutes.toString().padLeft(2, '0'),
-              t.minutes,
-              theme,
-            ),
+            _buildTimeUnit(minutes.toString().padLeft(2, '0'), t.minutes, theme),
             _buildTimeSeparator(theme),
-            _buildTimeUnit(
-              seconds.toString().padLeft(2, '0'),
-              t.seconds,
-              theme,
-            ),
+            _buildTimeUnit(seconds.toString().padLeft(2, '0'), t.seconds, theme),
           ],
         ),
       ],
