@@ -61,6 +61,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   flutter_native_splash: ^2.4.7
   flutter_launcher_icons: ^0.14.4
+  shimmer: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

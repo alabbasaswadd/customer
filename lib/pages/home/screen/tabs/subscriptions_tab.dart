@@ -7,7 +7,7 @@ import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/subscriptions_state.dart';
 import 'package:mikrotic_customer/pages/home/model/subscription_plan_model.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_error_widget.dart';
-import 'package:mikrotic_customer/pages/home/screen/widgets/home_loading_widget.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 
 class SubscriptionsTab extends StatefulWidget {
   const SubscriptionsTab({super.key});
@@ -58,8 +58,8 @@ class _SubscriptionsTabState extends State<SubscriptionsTab>
                   SubscriptionsState<List<SubscriptionPlanModel>>>(
                 builder: (context, state) {
                   return state.when(
-                    initial: () => const HomeLoadingWidget(),
-                    loading: () => const HomeLoadingWidget(),
+                    initial: () => const SubscriptionsShimmer(),
+                    loading: () => const SubscriptionsShimmer(),
                     success: (plans) => _buildPlansList(plans, t, theme),
                     error: (message) => HomeErrorWidget(
                       errorMessage: message,

@@ -4,7 +4,5 @@ import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_state
 class ComplaintCubit extends Cubit<ComplaintState> {
   ComplaintCubit(super.initialState);
 
-  void addComplaint(){
-    
-  }
+  void addComplaint() {}
 }

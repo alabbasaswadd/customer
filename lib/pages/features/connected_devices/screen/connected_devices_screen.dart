@@ -6,6 +6,7 @@ import 'package:mikrotic_customer/l10n/app_localizations.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connected_devices_cubit.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connected_devices_state.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/model/device_model.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/model/network_info_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -161,24 +162,7 @@ class _ConnectedDevicesScreenState extends State<ConnectedDevicesScreen>
   }
 
   Widget _buildLoadingState(AppLocalizations t, ThemeData theme) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-              theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          const AppText(
-            'Loading network info...',
-            fontSize: 16,
-            color: AppColors.kGreyColor,
-          ),
-        ],
-      ),
-    );
+    return const ConnectedDevicesShimmer();
   }
 
   Widget _buildScanningState(

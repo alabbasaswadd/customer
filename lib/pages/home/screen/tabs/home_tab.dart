@@ -8,7 +8,7 @@ import 'package:mikrotic_customer/pages/features/account/model/subscription_mode
 import 'package:mikrotic_customer/pages/home/model/user_model.dart' show UserModel;
 import 'package:mikrotic_customer/pages/home/screen/widgets/greeting_header.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/home_error_widget.dart';
-import 'package:mikrotic_customer/pages/home/screen/widgets/home_loading_widget.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/subscription_card.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/quick_actions_widget.dart';
 import 'package:mikrotic_customer/pages/home/screen/widgets/subscription_ticker_widget.dart';
@@ -97,8 +97,8 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
       },
       builder: (context, state) {
         return state.when(
-          initial: () => const HomeLoadingWidget(),
-          loading: () => const HomeLoadingWidget(),
+          initial: () => const HomeShimmer(),
+          loading: () => const HomeShimmer(),
           success: (user) => _buildContent(user),
           error: (message) => HomeErrorWidget(
             errorMessage: message,
