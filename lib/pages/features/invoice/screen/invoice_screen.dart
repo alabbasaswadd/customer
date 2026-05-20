@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 
 enum LogCategory { all, transactions, passwordChanges, resets, admin }
@@ -44,6 +45,7 @@ class _InvoiceScreenState extends State<InvoiceScreen>
   LogCategory _selectedCategory = LogCategory.all;
   String _searchQuery = '';
   final Set<String> _expandedIds = {};
+  bool _isLoading = true;
 
   final List<LogEntry> _allEntries = [
     LogEntry(
@@ -152,7 +154,12 @@ class _InvoiceScreenState extends State<InvoiceScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
-    _animationController.forward();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        _animationController.forward();
+      }
+    });
   }
 
   @override
@@ -225,21 +232,23 @@ class _InvoiceScreenState extends State<InvoiceScreen>
           ),
         ],
       ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Column(
-          children: [
-            _buildSummaryCards(theme),
-            _buildSearchBar(theme),
-            _buildFilterTabs(theme),
-            Expanded(
-              child: filtered.isEmpty
-                  ? _buildEmptyState(theme)
-                  : _buildEntriesList(theme, filtered),
+      body: _isLoading
+          ? const InvoiceShimmer()
+          : FadeTransition(
+              opacity: _fadeAnimation,
+              child: Column(
+                children: [
+                  _buildSummaryCards(theme),
+                  _buildSearchBar(theme),
+                  _buildFilterTabs(theme),
+                  Expanded(
+                    child: filtered.isEmpty
+                        ? _buildEmptyState(theme)
+                        : _buildEntriesList(theme, filtered),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

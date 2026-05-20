@@ -9,7 +9,7 @@ class ErrorModel {
   ErrorModel({required this.message, this.code});
 
   factory ErrorModel.fromJson(Map<String, dynamic> json) =>
-      _$ApiErrorModelFromJson(json);
+      _$ErrorModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ApiErrorModelToJson(this);
+  Map<String, dynamic> toJson() => _$ErrorModelToJson(this);
 }

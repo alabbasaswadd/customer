@@ -52,12 +52,12 @@ class _ComplaintApiService implements ComplaintApiService {
   }
 
   @override
-  Future<ComplaintResponseModel> getComplaints() async {
+  Future<ComplaintListResponseModel> getComplaints() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ComplaintResponseModel>(
+    final _options = _setStreamType<ComplaintListResponseModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -68,9 +68,9 @@ class _ComplaintApiService implements ComplaintApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ComplaintResponseModel _value;
+    late ComplaintListResponseModel _value;
     try {
-      _value = ComplaintResponseModel.fromJson(_result.data!);
+      _value = ComplaintListResponseModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -88,7 +88,7 @@ class _ComplaintApiService implements ComplaintApiService {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'user-api/Complaint',
+            'user-api/Complaint/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -119,7 +119,7 @@ class _ComplaintApiService implements ComplaintApiService {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'user-api/Complaint',
+            'user-api/Complaint/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

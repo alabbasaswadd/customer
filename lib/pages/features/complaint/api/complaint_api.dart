@@ -1,7 +1,7 @@
 import 'package:mikrotic_customer/core/constants/base_api.dart';
-import 'package:mikrotic_customer/core/constants/model/error_model.dart';
 import 'package:mikrotic_customer/core/networking/api_result.dart';
 import 'package:mikrotic_customer/pages/features/complaint/api/complaint_api_service.dart';
+import 'package:mikrotic_customer/pages/features/complaint/model/complaint_list_response_model.dart';
 import 'package:mikrotic_customer/pages/features/complaint/model/complaint_request_model.dart';
 import 'package:mikrotic_customer/pages/features/complaint/model/complaint_response_model.dart';
 
@@ -16,7 +16,7 @@ class ComplaintApi extends BaseApi {
     return execute(request: () => _apiService.addComplaint(request));
   }
 
-  Future<ApiResult<ComplaintResponseModel>> getComplaints() {
+  Future<ApiResult<ComplaintListResponseModel>> getComplaints() {
     return execute(request: () => _apiService.getComplaints());
   }
 

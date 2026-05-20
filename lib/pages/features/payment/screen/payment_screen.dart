@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 
@@ -20,6 +21,7 @@ class _PaymentScreenState extends State<PaymentScreen>
   int _selectedPaymentMethod = -1;
   final _amountController = TextEditingController();
   bool _isProcessing = false;
+  bool _isLoading = true;
 
   final List<_PaymentMethod> _paymentMethods = [
     _PaymentMethod(
@@ -70,7 +72,12 @@ class _PaymentScreenState extends State<PaymentScreen>
     ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
-    _animationController.forward();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        _animationController.forward();
+      }
+    });
   }
 
   @override
@@ -160,41 +167,34 @@ class _PaymentScreenState extends State<PaymentScreen>
         ),
         centerTitle: true,
       ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: SlideTransition(
-          position: _slideAnimation,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Amount Input Section
-                  _buildAmountSection(t, theme),
-                  const SizedBox(height: 24),
-
-                  // Quick Amount Buttons
-                  _buildQuickAmountSection(theme),
-                  const SizedBox(height: 32),
-
-                  // Payment Methods Section
-                  _buildPaymentMethodsSection(t, theme),
-                  const SizedBox(height: 32),
-
-                  // Pay Button
-                  _buildPayButton(t, theme),
-                  const SizedBox(height: 24),
-
-                  // Security Note
-                  _buildSecurityNote(t, theme),
-                ],
+      body: _isLoading
+          ? const PaymentShimmer()
+          : FadeTransition(
+              opacity: _fadeAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildAmountSection(t, theme),
+                        const SizedBox(height: 24),
+                        _buildQuickAmountSection(theme),
+                        const SizedBox(height: 32),
+                        _buildPaymentMethodsSection(t, theme),
+                        const SizedBox(height: 32),
+                        _buildPayButton(t, theme),
+                        const SizedBox(height: 24),
+                        _buildSecurityNote(t, theme),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 

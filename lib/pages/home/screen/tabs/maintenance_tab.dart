@@ -1,41 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/core/components/app_button.dart';
+import 'package:mikrotic_customer/core/components/app_snackbar.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
 import 'package:mikrotic_customer/core/components/app_text_form_field.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
-import 'package:mikrotic_customer/pages/home/cubit/maintenance_cubit.dart';
-import 'package:mikrotic_customer/pages/home/cubit/maintenance_state.dart';
+import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_cubit.dart';
+import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_state.dart';
 
 // ---------------------------------------------------------------------------
-// Data helpers
+// Diagnostics data
 // ---------------------------------------------------------------------------
-
-class _IssueType {
-  final String label;
-  final IconData icon;
-  const _IssueType(this.label, this.icon);
-}
-
-const _issueTypes = [
-  _IssueType('انقطاع الإنترنت', Icons.wifi_off_rounded),
-  _IssueType('بطء الشبكة', Icons.speed_rounded),
-  _IssueType('مشكلة الراوتر', Icons.router_rounded),
-  _IssueType('تذبذب الاتصال', Icons.signal_wifi_statusbar_connected_no_internet_4_rounded),
-  _IssueType('أخرى', Icons.more_horiz_rounded),
-];
-
-class _Priority {
-  final String label;
-  final Color color;
-  const _Priority(this.label, this.color);
-}
-
-const _priorities = [
-  _Priority('منخفضة', Colors.green),
-  _Priority('متوسطة', Colors.orange),
-  _Priority('عالية', Colors.red),
-];
 
 class _DiagnosticItem {
   final String label;
@@ -100,9 +77,8 @@ class _MaintenanceTabState extends State<MaintenanceTab>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
-  String? _selectedIssueType;
-  String? _selectedPriority;
   bool _isDiagnosing = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -117,16 +93,19 @@ class _MaintenanceTabState extends State<MaintenanceTab>
         curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.15),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
-      ),
-    );
-    _animationController.forward();
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
+          ),
+        );
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        _animationController.forward();
+      }
+    });
   }
 
   @override
@@ -141,52 +120,24 @@ class _MaintenanceTabState extends State<MaintenanceTab>
     if (mounted) setState(() => _isDiagnosing = false);
   }
 
-  void _submitForm() {
-    if (_selectedIssueType == null) {
-      _showSnackBar('الرجاء اختيار نوع المشكلة', isError: true);
-      return;
-    }
-    if (_selectedPriority == null) {
-      _showSnackBar('الرجاء اختيار درجة الأولوية', isError: true);
-      return;
-    }
-    context.read<MaintenanceCubit>().submitRequest(
-          issueType: _selectedIssueType!,
-          priority: _selectedPriority!,
-        );
-  }
-
-  void _showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? AppColors.kRedColor : Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cubit = context.read<MaintenanceCubit>();
 
-    return BlocListener<MaintenanceCubit, MaintenanceState>(
+    if (_isLoading) {
+      return const SafeArea(child: MaintenanceShimmer());
+    }
+
+    return BlocListener<ComplaintCubit, ComplaintState>(
       listener: (context, state) {
         state.maybeWhen(
-          success: () {
-            setState(() {
-              _selectedIssueType = null;
-              _selectedPriority = null;
-            });
-            _showSnackBar('تم إرسال طلب الصيانة بنجاح');
-            cubit.resetState();
+          success: (_) {
+            AppSnackbar.showSuccess(context, 'تم إرسال الشكوى بنجاح');
+            context.read<ComplaintCubit>().resetState();
           },
           error: (message) {
-            _showSnackBar(message, isError: true);
-            cubit.resetState();
+            AppSnackbar.showError(context, message);
+            context.read<ComplaintCubit>().resetState();
           },
           orElse: () {},
         );
@@ -206,7 +157,7 @@ class _MaintenanceTabState extends State<MaintenanceTab>
                   const SizedBox(height: 24),
                   _buildDiagnosticsCard(theme),
                   const SizedBox(height: 16),
-                  _buildRequestForm(theme, cubit),
+                  _buildComplaintForm(theme),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -233,7 +184,7 @@ class _MaintenanceTabState extends State<MaintenanceTab>
         ),
         const SizedBox(height: 8),
         const AppText(
-          'تشخيص الشبكة وإدارة طلبات الصيانة',
+          'تشخيص الشبكة وتقديم الشكاوى',
           fontSize: 14,
           fontWeight: FontWeight.w400,
           color: AppColors.kGreyColor,
@@ -253,11 +204,11 @@ class _MaintenanceTabState extends State<MaintenanceTab>
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: theme.colorScheme.outline.withValues(alpha: 0.1),
         ),
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withOpacity(0.05),
+            color: theme.shadowColor.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -272,7 +223,6 @@ class _MaintenanceTabState extends State<MaintenanceTab>
             theme: theme,
           ),
           const SizedBox(height: 16),
-          // 2 × 2 grid
           Row(
             children: [
               Expanded(child: _buildDiagnosticCell(_diagnostics[0], theme)),
@@ -300,9 +250,9 @@ class _MaintenanceTabState extends State<MaintenanceTab>
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: item.color.withOpacity(0.07),
+        color: item.color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: item.color.withOpacity(0.2)),
+        border: Border.all(color: item.color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +262,7 @@ class _MaintenanceTabState extends State<MaintenanceTab>
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: item.color.withOpacity(0.15),
+                  color: item.color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(item.icon, color: item.color, size: 16),
@@ -374,7 +324,9 @@ class _MaintenanceTabState extends State<MaintenanceTab>
             fontFamily: 'Cairo-Bold',
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: _isDiagnosing ? AppColors.kGreyColor : theme.colorScheme.primary,
+            color: _isDiagnosing
+                ? AppColors.kGreyColor
+                : theme.colorScheme.primary,
           ),
         ),
         style: OutlinedButton.styleFrom(
@@ -384,8 +336,8 @@ class _MaintenanceTabState extends State<MaintenanceTab>
           ),
           side: BorderSide(
             color: _isDiagnosing
-                ? AppColors.kGreyColor.withOpacity(0.3)
-                : theme.colorScheme.primary.withOpacity(0.6),
+                ? AppColors.kGreyColor.withValues(alpha: 0.3)
+                : theme.colorScheme.primary.withValues(alpha: 0.6),
           ),
         ),
       ),
@@ -393,21 +345,23 @@ class _MaintenanceTabState extends State<MaintenanceTab>
   }
 
   // --------------------------------------------------------------------------
-  // Request form card
+  // Complaint form card
   // --------------------------------------------------------------------------
 
-  Widget _buildRequestForm(ThemeData theme, MaintenanceCubit cubit) {
+  Widget _buildComplaintForm(ThemeData theme) {
+    final cubit = context.read<ComplaintCubit>();
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: theme.colorScheme.outline.withValues(alpha: 0.1),
         ),
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withOpacity(0.05),
+            color: theme.shadowColor.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -418,36 +372,46 @@ class _MaintenanceTabState extends State<MaintenanceTab>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCardHeader(
-              icon: Icons.build_rounded,
-              title: 'طلب صيانة',
-              theme: theme,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildCardHeader(
+                  icon: Icons.edit_note_rounded,
+                  title: 'تقديم شكوى',
+                  theme: theme,
+                ),
+                IconButton(
+                  onPressed: () {
+                    context.push('/complaints/history');
+                  },
+                  icon: const Icon(Icons.history),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
-
-            // Issue type
-            _buildSectionLabel('نوع المشكلة', theme),
-            const SizedBox(height: 10),
-            _buildIssueTypeChips(theme),
-            const SizedBox(height: 20),
-
-            // Priority
-            _buildSectionLabel('درجة الأولوية', theme),
-            const SizedBox(height: 10),
-            _buildPriorityChips(theme),
-            const SizedBox(height: 20),
-
-            // Description
             AppTextFormField(
-              label: 'وصف المشكلة',
-              controller: cubit.descriptionController,
+              label: 'عنوان الشكوى',
+              controller: context.read<ComplaintCubit>().titleController,
+              icon: Icons.title_rounded,
+              textInputAction: TextInputAction.next,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'الرجاء إدخال عنوان الشكوى';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            AppTextFormField(
+              label: 'وصف الشكوى',
+              controller: context.read<ComplaintCubit>().descriptionController,
               icon: Icons.description_outlined,
               maxLines: 4,
               textInputAction: TextInputAction.newline,
               borderRadius: 12,
               validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الرجاء إدخال وصف للمشكلة';
+                if (value == null || value.trim().isEmpty) {
+                  return 'الرجاء إدخال وصف الشكوى';
                 }
                 if (value.trim().length < 10) {
                   return 'الوصف قصير جداً، أدخل 10 أحرف على الأقل';
@@ -456,9 +420,7 @@ class _MaintenanceTabState extends State<MaintenanceTab>
               },
             ),
             const SizedBox(height: 24),
-
-            // Submit button
-            BlocBuilder<MaintenanceCubit, MaintenanceState>(
+            BlocBuilder<ComplaintCubit, ComplaintState>(
               builder: (context, state) {
                 final isLoading = state.maybeWhen(
                   loading: () => true,
@@ -467,8 +429,9 @@ class _MaintenanceTabState extends State<MaintenanceTab>
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    text: 'إرسال طلب الصيانة',
-                    onPressed: _submitForm,
+                    text: 'إرسال الشكوى',
+                    onPressed: () =>
+                        context.read<ComplaintCubit>().addComplaint(),
                     isLoading: isLoading,
                     icon: Icons.send_rounded,
                     height: 54,
@@ -482,128 +445,6 @@ class _MaintenanceTabState extends State<MaintenanceTab>
         ),
       ),
     );
-  }
-
-  Widget _buildSectionLabel(String label, ThemeData theme) {
-    return AppText(
-      label,
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      color: AppColors.kGreyColor,
-    );
-  }
-
-  Widget _buildIssueTypeChips(ThemeData theme) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: _issueTypes.map((type) {
-        final isSelected = _selectedIssueType == type.label;
-        return GestureDetector(
-          onTap: () => setState(() => _selectedIssueType = type.label),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.primary.withOpacity(0.07),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.outline.withOpacity(0.2),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  type.icon,
-                  size: 16,
-                  color: isSelected
-                      ? AppColors.kWhiteColor
-                      : theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 6),
-                AppText(
-                  type.label,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: isSelected
-                      ? AppColors.kWhiteColor
-                      : theme.colorScheme.onSurface,
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildPriorityChips(ThemeData theme) {
-    return Row(
-      children: _priorities.asMap().entries.map((entry) {
-        final priority = entry.value;
-        final isLast = entry.key == _priorities.length - 1;
-        final isSelected = _selectedPriority == priority.label;
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(right: isLast ? 0 : 8),
-            child: GestureDetector(
-              onTap: () => setState(() => _selectedPriority = priority.label),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? priority.color
-                      : priority.color.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected
-                        ? priority.color
-                        : priority.color.withOpacity(0.3),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      _priorityIcon(priority.label),
-                      size: 18,
-                      color: isSelected ? AppColors.kWhiteColor : priority.color,
-                    ),
-                    const SizedBox(height: 4),
-                    AppText(
-                      priority.label,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color:
-                          isSelected ? AppColors.kWhiteColor : priority.color,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  IconData _priorityIcon(String label) {
-    switch (label) {
-      case 'منخفضة':
-        return Icons.arrow_downward_rounded;
-      case 'متوسطة':
-        return Icons.remove_rounded;
-      case 'عالية':
-        return Icons.arrow_upward_rounded;
-      default:
-        return Icons.circle_outlined;
-    }
   }
 
   // --------------------------------------------------------------------------
@@ -620,7 +461,7 @@ class _MaintenanceTabState extends State<MaintenanceTab>
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: theme.colorScheme.primary.withOpacity(0.1),
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: theme.colorScheme.primary, size: 24),

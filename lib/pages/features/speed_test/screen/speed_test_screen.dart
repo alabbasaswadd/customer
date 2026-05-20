@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_internet_speed_test_pro/flutter_internet_speed_test_pro.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 
@@ -30,6 +31,7 @@ class _SpeedTestScreenState extends State<SpeedTestScreen>
   late AnimationController _pulseController;
   late AnimationController _rotationController;
   late Animation<double> _pulseAnimation;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -45,6 +47,9 @@ class _SpeedTestScreenState extends State<SpeedTestScreen>
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
   }
 
   @override
@@ -196,34 +201,27 @@ class _SpeedTestScreenState extends State<SpeedTestScreen>
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              // Speed Results Cards at Top
-              _buildSpeedResultsRow(t, theme),
-              const SizedBox(height: 24),
-
-              // Main Speed Gauge
-              _buildSpeedGauge(t, theme),
-              const SizedBox(height: 24),
-
-              // Status Card
-              _buildStatusCard(t, theme),
-              const SizedBox(height: 24),
-
-              // Action Button
-              _buildActionButton(t, theme),
-              const SizedBox(height: 24),
-
-              // Additional Info Cards
-              _buildInfoCards(t, theme),
-            ],
-          ),
-        ),
-      ),
+      body: _isLoading
+          ? const SpeedTestShimmer()
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    _buildSpeedResultsRow(t, theme),
+                    const SizedBox(height: 24),
+                    _buildSpeedGauge(t, theme),
+                    const SizedBox(height: 24),
+                    _buildStatusCard(t, theme),
+                    const SizedBox(height: 24),
+                    _buildActionButton(t, theme),
+                    const SizedBox(height: 24),
+                    _buildInfoCards(t, theme),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 

@@ -295,7 +295,7 @@ class AppSnackbar {
   }
 
   static Color _getSuccessColor() {
-    return AppColors.kPrimaryColor; // لون أخضر جميل
+    return Colors.green; // لون أخضر جميل
   }
 
   static Color _getInfoColor() {

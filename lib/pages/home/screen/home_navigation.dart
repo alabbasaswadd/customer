@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mikrotic_customer/core/di/dependency_injection.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
+import 'package:mikrotic_customer/pages/features/chat/cubit/chat_cubit.dart';
+import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/maintenance_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
@@ -51,11 +53,7 @@ class _HomeNavigationState extends State<HomeNavigation>
   void _onTabTapped(int index) {
     if (_currentIndex != index) {
       setState(() => _currentIndex = index);
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      _pageController.jumpToPage(index);
     }
   }
 
@@ -69,6 +67,8 @@ class _HomeNavigationState extends State<HomeNavigation>
         BlocProvider(create: (context) => getIt<SubscriptionsCubit>()),
         BlocProvider(create: (context) => getIt<SupportCubit>()),
         BlocProvider(create: (context) => getIt<MaintenanceCubit>()),
+        BlocProvider(create: (context) => getIt<ChatCubit>()..loadMessages()),
+        BlocProvider(create: (context) => getIt<ComplaintCubit>()),
       ],
       child: Scaffold(
         body: PageView(

@@ -2,15 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mikrotic_customer/core/components/app_alert_dialog.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/core/constants/cached/user_session.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 
-class SettingsTab extends StatelessWidget {
+class SettingsTab extends StatefulWidget {
   const SettingsTab({super.key});
 
   @override
+  State<SettingsTab> createState() => _SettingsTabState();
+}
+
+class _SettingsTabState extends State<SettingsTab> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) return const SafeArea(child: SettingsShimmer());
+
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -100,9 +118,7 @@ class SettingsTab extends StatelessWidget {
                 _SettingsItem(
                   icon: Icons.help_outline_rounded,
                   title: t.help,
-                  onTap: () {
-                  
-                  },
+                  onTap: () {},
                 ),
                 _SettingsItem(
                   icon: Icons.logout_rounded,

@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mikrotic_customer/core/components/app_button.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
-import 'package:mikrotic_customer/core/components/app_text_form_field.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
-import 'package:mikrotic_customer/pages/home/cubit/support_cubit.dart';
-import 'package:mikrotic_customer/pages/home/cubit/support_state.dart';
+import 'package:mikrotic_customer/pages/features/chat/cubit/chat_cubit.dart';
+import 'package:mikrotic_customer/pages/features/chat/cubit/chat_state.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
+import 'package:mikrotic_customer/pages/features/chat/model/chat_message.dart';
+
+// ────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ────────────────────────────────────────────────────────────────────────────
+
+String _formatTime(DateTime dt) {
+  final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+  final m = dt.minute.toString().padLeft(2, '0');
+  return '$h:$m ${dt.hour < 12 ? 'ص' : 'م'}';
+}
+
+String _formatDateLabel(DateTime dt) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final d = DateTime(dt.year, dt.month, dt.day);
+  if (d == today) return 'اليوم';
+  if (d == today.subtract(const Duration(days: 1))) return 'أمس';
+  return '${dt.day}/${dt.month}/${dt.year}';
+}
+
+class _DateLabel {
+  final DateTime date;
+  const _DateLabel(this.date);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Tab
+// ────────────────────────────────────────────────────────────────────────────
 
 class SupportTab extends StatefulWidget {
   const SupportTab({super.key});
@@ -16,42 +43,98 @@ class SupportTab extends StatefulWidget {
   State<SupportTab> createState() => _SupportTabState();
 }
 
-class _SupportTabState extends State<SupportTab>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+class _SupportTabState extends State<SupportTab> {
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
+  bool _hasText = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 700),
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-      ),
-    );
-
-    _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: const Interval(0.2, 1.0, curve: Curves.easeOutCubic),
-          ),
-        );
-
-    _animationController.forward();
+    _textController.addListener(() {
+      final has = _textController.text.trim().isNotEmpty;
+      if (has != _hasText) setState(() => _hasText = has);
+    });
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _textController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _send() {
+    final text = _textController.text.trim();
+    if (text.isEmpty) return;
+    context.read<ChatCubit>().sendMessage(text);
+    _textController.clear();
+    _scrollToBottom();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  void _showClearDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          'مسح المحادثة',
+          style: TextStyle(
+            fontFamily: 'Cairo-Bold',
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+        content: Text(
+          'سيتم حذف جميع الرسائل نهائياً. هل أنت متأكد؟',
+          style: const TextStyle(
+            fontFamily: 'Cairo-Bold',
+            fontWeight: FontWeight.w400,
+            color: AppColors.kGreyColor,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(
+              'إلغاء',
+              style: TextStyle(
+                fontFamily: 'Cairo-Bold',
+                color: AppColors.kGreyColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              context.read<ChatCubit>().clearChat();
+            },
+            child: const Text(
+              'مسح',
+              style: TextStyle(
+                fontFamily: 'Cairo-Bold',
+                color: AppColors.kRedColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -59,355 +142,665 @@ class _SupportTabState extends State<SupportTab>
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    return BlocListener<SupportCubit, SupportState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          success: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(t.complaint_submitted),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-            context.read<SupportCubit>().resetState();
-          },
-          error: (message) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(message),
-                backgroundColor: AppColors.kRedColor,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-            context.read<SupportCubit>().resetState();
-          },
-          orElse: () {},
-        );
-      },
+    return BlocListener<ChatCubit, ChatState>(
+      listenWhen: (prev, curr) =>
+          prev.messages.length != curr.messages.length ||
+          prev.isTyping != curr.isTyping,
+      listener: (_, __) => _scrollToBottom(),
       child: SafeArea(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(t, theme),
-                  const SizedBox(height: 24),
-                  _buildLiveChatCard(theme),
-                  const SizedBox(height: 16),
-                  _buildComplaintForm(t, theme),
-                ],
+        bottom: false,
+        child: Column(
+          children: [
+            _buildHeader(t, theme),
+            _OfflineBanner(theme: theme),
+            Expanded(
+              child: BlocBuilder<ChatCubit, ChatState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const ChatShimmer();
+                  }
+                  return _buildMessageList(state, theme);
+                },
               ),
             ),
-          ),
+            _InputBar(
+              controller: _textController,
+              hasText: _hasText,
+              onSend: _send,
+              theme: theme,
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildHeader(AppLocalizations t, ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppText(
-          t.support,
-          fontSize: 28,
-          fontWeight: FontWeight.w700,
-          color: theme.colorScheme.onSurface,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 8, 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(
+                  t.support,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      margin: const EdgeInsets.only(left: 6),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF4CAF50),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const AppText(
+                      'فريق الدعم متاح دائماً',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.kGreyColor,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            ),
+            onPressed: () => _showClearDialog(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageList(ChatState state, ThemeData theme) {
+    final items = _buildFlatItems(state.messages, state.isTyping);
+
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    return ListView.builder(
+      controller: _scrollController,
+      reverse: true,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        if (item is String && item == 'typing') {
+          return _TypingBubble(theme: theme);
+        }
+        if (item is _DateLabel) {
+          return _DateChip(label: _formatDateLabel(item.date));
+        }
+        final msg = item as ChatMessage;
+        final prev = index < items.length - 1 ? items[index + 1] : null;
+        final hideSupportAvatar =
+            prev is ChatMessage && !prev.isFromUser && !msg.isFromUser;
+        return _MessageBubble(
+          message: msg,
+          theme: theme,
+          showSupportAvatar: !msg.isFromUser && !hideSupportAvatar,
+          formatTime: _formatTime,
+        );
+      },
+    );
+  }
+
+  List<dynamic> _buildFlatItems(List<ChatMessage> messages, bool isTyping) {
+    final items = <dynamic>[];
+    if (isTyping) items.add('typing');
+
+    final reversed = messages.reversed.toList();
+    for (int i = 0; i < reversed.length; i++) {
+      final msg = reversed[i];
+      items.add(msg);
+
+      final currDay =
+          DateTime(msg.timestamp.year, msg.timestamp.month, msg.timestamp.day);
+      if (i == reversed.length - 1) {
+        items.add(_DateLabel(msg.timestamp));
+      } else {
+        final nextMsg = reversed[i + 1];
+        final nextDay = DateTime(nextMsg.timestamp.year,
+            nextMsg.timestamp.month, nextMsg.timestamp.day);
+        if (currDay != nextDay) items.add(_DateLabel(msg.timestamp));
+      }
+    }
+    return items;
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Offline Banner
+// ────────────────────────────────────────────────────────────────────────────
+
+class _OfflineBanner extends StatelessWidget {
+  final ThemeData theme;
+  const _OfflineBanner({required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.1),
+        border: Border(
+          bottom: BorderSide(color: Colors.orange.withValues(alpha: 0.2)),
         ),
-        const SizedBox(height: 8),
-        AppText(
-          t.support_subtitle,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: AppColors.kGreyColor,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_off_rounded, size: 13, color: Colors.orange),
+          const SizedBox(width: 6),
+          Text(
+            'الرسائل محفوظة على جهازك • يعمل دون اتصال',
+            style: TextStyle(
+              fontFamily: 'Cairo-Bold',
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Colors.orange.shade700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Date Chip
+// ────────────────────────────────────────────────────────────────────────────
+
+class _DateChip extends StatelessWidget {
+  final String label;
+  const _DateChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.outline.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: theme.colorScheme.outline.withValues(alpha: 0.15),
+            ),
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontFamily: 'Cairo-Bold',
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: AppColors.kGreyColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Message Bubble
+// ────────────────────────────────────────────────────────────────────────────
+
+class _MessageBubble extends StatelessWidget {
+  final ChatMessage message;
+  final ThemeData theme;
+  final bool showSupportAvatar;
+  final String Function(DateTime) formatTime;
+
+  const _MessageBubble({
+    required this.message,
+    required this.theme,
+    required this.showSupportAvatar,
+    required this.formatTime,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: message.isFromUser ? _userBubble() : _supportBubble(),
+    );
+  }
+
+  Widget _userBubble() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 280),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                theme.colorScheme.primary,
+                theme.colorScheme.primary.withValues(alpha: 0.88),
+              ],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+            ),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(18),
+              topRight: Radius.circular(18),
+              bottomRight: Radius.circular(18),
+              bottomLeft: Radius.circular(4),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                message.content,
+                style: const TextStyle(
+                  fontFamily: 'Cairo-Bold',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.kWhiteColor,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    formatTime(message.timestamp),
+                    style: TextStyle(
+                      fontFamily: 'Cairo-Bold',
+                      fontSize: 10,
+                      color: AppColors.kWhiteColor.withValues(alpha: 0.7),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  _statusIcon(),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _supportBubble() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (showSupportAvatar)
+          Container(
+            width: 30,
+            height: 30,
+            margin: const EdgeInsets.only(left: 8, bottom: 2),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.secondary,
+                ],
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.support_agent_rounded,
+              color: AppColors.kWhiteColor,
+              size: 16,
+            ),
+          )
+        else
+          const SizedBox(width: 38),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 280),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18),
+                  bottomLeft: Radius.circular(18),
+                  bottomRight: Radius.circular(4),
+                ),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.12),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.shadowColor.withValues(alpha: 0.06),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    message.content,
+                    style: TextStyle(
+                      fontFamily: 'Cairo-Bold',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.onSurface,
+                      height: 1.55,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    formatTime(message.timestamp),
+                    style: const TextStyle(
+                      fontFamily: 'Cairo-Bold',
+                      fontSize: 10,
+                      color: AppColors.kGreyColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
 
-  // Widget _buildContactInfo(AppLocalizations t, ThemeData theme) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(20),
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           theme.colorScheme.primary,
-  //           theme.colorScheme.primary.withOpacity(0.8),
-  //         ],
-  //         begin: Alignment.topLeft,
-  //         end: Alignment.bottomRight,
-  //       ),
-  //       borderRadius: BorderRadius.circular(20),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: theme.colorScheme.primary.withOpacity(0.3),
-  //           blurRadius: 15,
-  //           offset: const Offset(0, 5),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Container(
-  //               padding: const EdgeInsets.all(12),
-  //               decoration: BoxDecoration(
-  //                 color: AppColors.kWhiteColor.withOpacity(0.2),
-  //                 borderRadius: BorderRadius.circular(12),
-  //               ),
-  //               child: const Icon(
-  //                 Icons.support_agent_rounded,
-  //                 color: AppColors.kWhiteColor,
-  //                 size: 28,
-  //               ),
-  //             ),
-  //             const SizedBox(width: 16),
-  //             Expanded(
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   AppText(
-  //                     t.contact_support,
-  //                     fontSize: 18,
-  //                     fontWeight: FontWeight.w700,
-  //                     color: AppColors.kWhiteColor,
-  //                   ),
-  //                   const SizedBox(height: 4),
-  //                   AppText(
-  //                     t.available_24_7,
-  //                     fontSize: 13,
-  //                     fontWeight: FontWeight.w400,
-  //                     color: AppColors.kWhiteColor.withOpacity(0.8),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //         const SizedBox(height: 20),
-  //         Row(
-  //           children: [
-  //             Expanded(
-  //               child: _buildContactButton(
-  //                 icon: Icons.phone_rounded,
-  //                 label: t.call_us,
-  //                 onTap: () {},
-  //               ),
-  //             ),
-  //             const SizedBox(width: 12),
-  //             Expanded(
-  //               child: _buildContactButton(
-  //                 icon: Icons.chat_rounded,
-  //                 label: t.whatsapp,
-  //                 onTap: () {},
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget _statusIcon() {
+    switch (message.status) {
+      case MessageStatus.sending:
+        return Icon(Icons.schedule_rounded,
+            size: 13,
+            color: AppColors.kWhiteColor.withValues(alpha: 0.7));
+      case MessageStatus.sent:
+        return Icon(Icons.done_rounded,
+            size: 13,
+            color: AppColors.kWhiteColor.withValues(alpha: 0.7));
+      case MessageStatus.read:
+        return const Icon(Icons.done_all_rounded,
+            size: 13, color: AppColors.kWhiteColor);
+    }
+  }
+}
 
-  Widget _buildContactButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: AppColors.kWhiteColor.withOpacity(0.2),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: AppColors.kWhiteColor, size: 20),
-              const SizedBox(width: 8),
-              AppText(
-                label,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.kWhiteColor,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+// ────────────────────────────────────────────────────────────────────────────
+// Typing Indicator
+// ────────────────────────────────────────────────────────────────────────────
+
+class _TypingBubble extends StatefulWidget {
+  final ThemeData theme;
+  const _TypingBubble({required this.theme});
+
+  @override
+  State<_TypingBubble> createState() => _TypingBubbleState();
+}
+
+class _TypingBubbleState extends State<_TypingBubble>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat();
   }
 
-  Widget _buildLiveChatCard(ThemeData theme) {
-    return GestureDetector(
-      onTap: () => context.push('/chat'),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.primary.withOpacity(0.8),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.primary.withOpacity(0.3),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.kWhiteColor.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const Icon(
-                Icons.support_agent_rounded,
-                color: AppColors.kWhiteColor,
-                size: 30,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                    'الدردشة مع الدعم الفني',
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.kWhiteColor,
-                  ),
-                  const SizedBox(height: 4),
-                  AppText(
-                    'تواصل مباشرة • يعمل دون إنترنت',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.kWhiteColor.withOpacity(0.85),
-                  ),
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            margin: const EdgeInsets.only(left: 8, bottom: 2),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  widget.theme.colorScheme.primary,
+                  widget.theme.colorScheme.secondary,
                 ],
               ),
+              shape: BoxShape.circle,
             ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.kWhiteColor.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: AppColors.kWhiteColor,
-                size: 16,
-              ),
+            child: const Icon(
+              Icons.support_agent_rounded,
+              color: AppColors.kWhiteColor,
+              size: 16,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildComplaintForm(AppLocalizations t, ThemeData theme) {
-    final cubit = context.read<SupportCubit>();
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
           ),
-        ],
-      ),
-      child: Form(
-        key: cubit.formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.edit_note_rounded,
-                    color: theme.colorScheme.primary,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                AppText(
-                  t.submit_complaint,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: widget.theme.cardColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(18),
+                topRight: Radius.circular(18),
+                bottomLeft: Radius.circular(18),
+                bottomRight: Radius.circular(4),
+              ),
+              border: Border.all(
+                color: widget.theme.colorScheme.outline.withValues(alpha: 0.12),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: widget.theme.shadowColor.withValues(alpha: 0.06),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _Dot(controller: _controller, delay: 0.0, theme: widget.theme),
+                const SizedBox(width: 5),
+                _Dot(controller: _controller, delay: 0.3, theme: widget.theme),
+                const SizedBox(width: 5),
+                _Dot(controller: _controller, delay: 0.6, theme: widget.theme),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-            const SizedBox(height: 16),
-            AppTextFormField(
-              label: t.message,
-              controller: cubit.messageController,
-              icon: Icons.message_outlined,
-              maxLines: 4,
-              textInputAction: TextInputAction.newline,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return t.message_required;
-                }
-                if (value.length < 10) {
-                  return t.message_too_short;
-                }
-                return null;
-              },
+class _Dot extends StatelessWidget {
+  final AnimationController controller;
+  final double delay;
+  final ThemeData theme;
+
+  const _Dot({
+    required this.controller,
+    required this.delay,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, __) {
+        final t = (controller.value + delay) % 1.0;
+        final y = t < 0.5 ? t * 2 : (1.0 - t) * 2;
+        return Transform.translate(
+          offset: Offset(0, -5 * y),
+          child: Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.55),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: 24),
-            BlocBuilder<SupportCubit, SupportState>(
-              builder: (context, state) {
-                final isLoading = state.maybeWhen(
-                  loading: () => true,
-                  orElse: () => false,
-                );
-                return SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    text: t.submit,
-                    onPressed: () => cubit.submitComplaint(),
-                    isLoading: isLoading,
-                    icon: Icons.send_rounded,
-                    height: 54,
-                    borderRadius: 12,
-                    padding: EdgeInsets.zero,
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Input Bar
+// ────────────────────────────────────────────────────────────────────────────
+
+class _InputBar extends StatelessWidget {
+  final TextEditingController controller;
+  final bool hasText;
+  final VoidCallback onSend;
+  final ThemeData theme;
+
+  const _InputBar({
+    required this.controller,
+    required this.hasText,
+    required this.onSend,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 120),
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                    ),
                   ),
-                );
-              },
-            ),
-          ],
+                  child: TextField(
+                    controller: controller,
+                    maxLines: null,
+                    minLines: 1,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => onSend(),
+                    style: TextStyle(
+                      fontFamily: 'Cairo-Bold',
+                      fontSize: 14,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'اكتب رسالتك...',
+                      hintStyle: TextStyle(
+                        fontFamily: 'Cairo-Bold',
+                        fontSize: 14,
+                        color: AppColors.kGreyColor.withValues(alpha: 0.6),
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 11,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              AnimatedScale(
+                scale: hasText ? 1.0 : 0.85,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutBack,
+                child: GestureDetector(
+                  onTap: hasText ? onSend : null,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: hasText
+                            ? [
+                                theme.colorScheme.primary,
+                                theme.colorScheme.primary.withValues(alpha: 0.82),
+                              ]
+                            : [
+                                AppColors.kGreyColor.withValues(alpha: 0.25),
+                                AppColors.kGreyColor.withValues(alpha: 0.15),
+                              ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      shape: BoxShape.circle,
+                      boxShadow: hasText
+                          ? [
+                              BoxShadow(
+                                color: theme.colorScheme.primary
+                                    .withValues(alpha: 0.35),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Icon(
+                      Icons.send_rounded,
+                      color: hasText
+                          ? AppColors.kWhiteColor
+                          : AppColors.kGreyColor.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

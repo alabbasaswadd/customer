@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mikrotic_customer/core/constants/model/error_model.dart';
-import 'package:mikrotic_customer/pages/home/home.dart';
+import 'package:mikrotic_customer/pages/features/complaint/model/complaint_model.dart';
 
 part 'complaint_response_model.g.dart';
 

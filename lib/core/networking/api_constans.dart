@@ -2,8 +2,11 @@ class ApiConstants {
   static const String apiBaseUrl =
       "http://network-isp-user-api.runasp.net/network-user-api/";
 
+  static const String tenantId = "acc428a5-af82-4f5f-88c8-08deb2b0ba02";
+
   static const String signin = "user-api/Account/SignIn";
   static const String complaint = "user-api/Complaint";
+  static const String complaintById = "user-api/Complaint/{id}";
 
   // Connected devices endpoints
   static const String connectedDevices = "user-api/Network/ConnectedDevices";

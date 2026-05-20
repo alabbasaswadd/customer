@@ -6,10 +6,10 @@ part of 'api_error_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ErrorModel _$ApiErrorModelFromJson(Map<String, dynamic> json) => ErrorModel(
+ErrorModel _$ErrorModelFromJson(Map<String, dynamic> json) => ErrorModel(
   message: json['message'] as String?,
   code: (json['code'] as num?)?.toInt(),
 );
 
-Map<String, dynamic> _$ApiErrorModelToJson(ErrorModel instance) =>
+Map<String, dynamic> _$ErrorModelToJson(ErrorModel instance) =>
     <String, dynamic>{'message': instance.message, 'code': instance.code};

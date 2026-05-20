@@ -9,7 +9,6 @@ abstract class BaseApi {
   }) async {
     try {
       final response = await request();
-
       return ApiResult.success(response);
     } on DioException catch (e) {
       return ApiResult.failure(

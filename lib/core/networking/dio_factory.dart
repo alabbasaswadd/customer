@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mikrotic_customer/core/constants/cached/user_session.dart';
 import 'package:mikrotic_customer/core/networking/api_constans.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -16,6 +17,12 @@ class DioFactory {
           baseUrl: ApiConstants.apiBaseUrl,
           connectTimeout: timeOut,
           receiveTimeout: timeOut,
+          headers: {
+            'Authorization': 'Bearer ${UserSession.user?.token ?? ''}',
+            'X-Tenant-Id':
+                UserSession.user?.subscriptions.first.id ??
+                ApiConstants.tenantId,
+          },
         ),
       );
       addDioInterceptor();
@@ -32,7 +39,11 @@ class DioFactory {
   // }
 
   static void setTokenIntoHeaderAfterLogin(String token) {
-    dio?.options.headers = {'Authorization': 'Bearer $token'};
+    dio?.options.headers = {
+      'X-Tenant-Id':
+          UserSession.user?.subscriptions.first.id ?? ApiConstants.tenantId,
+      'Authorization': 'Bearer ${UserSession.user?.token ?? token}',
+    };
   }
 
   static void addDioInterceptor() {

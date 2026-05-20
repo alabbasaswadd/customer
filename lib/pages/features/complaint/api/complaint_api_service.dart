@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mikrotic_customer/core/networking/api_constans.dart';
+import 'package:mikrotic_customer/pages/features/complaint/model/complaint_list_response_model.dart';
 import 'package:mikrotic_customer/pages/features/complaint/model/complaint_request_model.dart';
 import 'package:mikrotic_customer/pages/features/complaint/model/complaint_response_model.dart';
 import 'package:retrofit/error_logger.dart';
@@ -16,10 +17,10 @@ abstract class ComplaintApiService {
     @Body() ComplaintRequestModel request,
   );
   @GET(ApiConstants.complaint)
-  Future<ComplaintResponseModel> getComplaints();
-  @DELETE(ApiConstants.complaint)
+  Future<ComplaintListResponseModel> getComplaints();
+  @DELETE(ApiConstants.complaintById)
   Future<ComplaintResponseModel> deleteComplaint(@Path('id') String id);
-  @PATCH(ApiConstants.complaint)
+  @PATCH(ApiConstants.complaintById)
   Future<ComplaintResponseModel> updateComplaint(
     @Path('id') String id,
     @Body() ComplaintRequestModel request,

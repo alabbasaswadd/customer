@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mikrotic_customer/core/components/app_text.dart';
+import 'package:mikrotic_customer/core/components/shimmer_widgets.dart';
 import 'package:mikrotic_customer/core/constants/colors.dart';
 import 'package:mikrotic_customer/l10n/app_localizations.dart';
 import 'package:mikrotic_customer/pages/features/notifications/model/notification_model.dart';
@@ -21,6 +22,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
 
   _Filter _filter = _Filter.all;
   late List<NotificationModel> _notifications;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -47,7 +49,12 @@ class _NotificationsScreenState extends State<NotificationsScreen>
       ),
     );
 
-    _animationController.forward();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        _animationController.forward();
+      }
+    });
   }
 
   @override
@@ -230,37 +237,40 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             ),
         ],
       ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: SlideTransition(
-          position: _slideAnimation,
-          child: Column(
-            children: [
-              _buildSummaryCard(theme),
-              _buildFilterRow(theme),
-              Expanded(
-                child: flat.isEmpty
-                    ? _buildEmptyState(theme)
-                    : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                        itemCount: flat.length,
-                        itemBuilder: (context, index) {
-                          final item = flat[index];
-                          if (item is String) {
-                            return _buildSectionHeader(item, theme);
-                          }
-                          return _buildNotificationItem(
-                            item as NotificationModel,
-                            index,
-                            theme,
-                          );
-                        },
-                      ),
+      body: _isLoading
+          ? const NotificationsShimmer()
+          : FadeTransition(
+              opacity: _fadeAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: Column(
+                  children: [
+                    _buildSummaryCard(theme),
+                    _buildFilterRow(theme),
+                    Expanded(
+                      child: flat.isEmpty
+                          ? _buildEmptyState(theme)
+                          : ListView.builder(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                              itemCount: flat.length,
+                              itemBuilder: (context, index) {
+                                final item = flat[index];
+                                if (item is String) {
+                                  return _buildSectionHeader(item, theme);
+                                }
+                                return _buildNotificationItem(
+                                  item as NotificationModel,
+                                  index,
+                                  theme,
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 

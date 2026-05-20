@@ -3,6 +3,8 @@ import 'package:mikrotic_customer/core/constants/cached/cached_helper.dart';
 import 'package:mikrotic_customer/core/di/dependency_injection.dart';
 import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
 import 'package:mikrotic_customer/pages/auth/signin/screen/signin_screen.dart';
+import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_cubit.dart';
+import 'package:mikrotic_customer/pages/features/complaint/screen/complaint_history.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connected_devices_cubit.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/screen/connected_devices_screen.dart';
 import 'package:mikrotic_customer/pages/features/invoice/screen/invoice_screen.dart';
@@ -51,7 +53,17 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state) => const HomeNavigation(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => getIt<ComplaintCubit>(),
+        child: const HomeNavigation(),
+      ),
+    ),
+    GoRoute(
+      path: '/complaints/history',
+      builder: (context, state) => BlocProvider(
+        create: (context) => getIt<ComplaintCubit>(),
+        child: const ComplaintHistory(),
+      ),
     ),
     GoRoute(
       path: '/speed-test',

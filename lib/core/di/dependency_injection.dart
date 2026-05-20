@@ -3,12 +3,16 @@ import 'package:mikrotic_customer/core/networking/dio_factory.dart';
 import 'package:mikrotic_customer/pages/auth/signin/api/signin_api.dart';
 import 'package:mikrotic_customer/pages/auth/signin/api/signin_api_service.dart';
 import 'package:mikrotic_customer/pages/auth/signin/cubit/signin_cubit.dart';
+import 'package:mikrotic_customer/pages/features/complaint/api/complaint_api.dart';
+import 'package:mikrotic_customer/pages/features/complaint/api/complaint_api_service.dart';
+import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_cubit.dart';
+import 'package:mikrotic_customer/pages/features/complaint/cubit/complaint_state.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/api/connected_devices_api.dart';
 import 'package:mikrotic_customer/pages/features/connected_devices/cubit/connected_devices_cubit.dart';
 import 'package:mikrotic_customer/pages/home/api/home_api.dart';
 import 'package:mikrotic_customer/pages/home/cubit/home_cubit.dart';
-import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/maintenance_cubit.dart';
+import 'package:mikrotic_customer/pages/home/cubit/subscriptions_cubit.dart';
 import 'package:mikrotic_customer/pages/home/cubit/support_cubit.dart';
 import 'package:mikrotic_customer/pages/features/chat/repository/chat_repository.dart';
 import 'package:mikrotic_customer/pages/features/chat/cubit/chat_cubit.dart';
@@ -30,7 +34,11 @@ Future<void> initDI() async {
   //! ConnectedDevicesApi
   getIt.registerLazySingleton(() => ConnectedDevicesApi());
 
-  //! Cubit
+  //! ComplaintApi
+  getIt.registerLazySingleton(() => ComplaintApiService(getIt()));
+  getIt.registerLazySingleton(() => ComplaintApi(getIt()));
+
+  //! Cubits
   getIt.registerFactory(() => StartupCubit());
   getIt.registerFactory(() => SigninCubit(getIt()));
   getIt.registerFactory(() => HomeCubit(getIt()));
@@ -38,6 +46,9 @@ Future<void> initDI() async {
   getIt.registerFactory(() => SupportCubit(getIt()));
   getIt.registerFactory(() => MaintenanceCubit(getIt()));
   getIt.registerFactory(() => ConnectedDevicesCubit(getIt()));
+  getIt.registerFactory(
+    () => ComplaintCubit(const ComplaintState.initial(), getIt()),
+  );
   getIt.registerLazySingleton(() => ChatRepository());
   getIt.registerFactory(() => ChatCubit(getIt()));
 }

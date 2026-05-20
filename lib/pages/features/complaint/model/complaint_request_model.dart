@@ -7,7 +7,7 @@ class ComplaintRequestModel {
   final String? title;
   final String? description;
   final String? attachmentUrl;
-  ComplaintRequestModel(this.title, this.description, this.attachmentUrl);
+  ComplaintRequestModel({this.title, this.description, this.attachmentUrl});
   factory ComplaintRequestModel.fromJson(Map<String, dynamic> json) {
     return _$ComplaintRequestModelFromJson(json);
   }

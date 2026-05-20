@@ -11,10 +11,8 @@ class SupportCubit extends Cubit<SupportState> {
   SupportCubit(this.api) : super(const SupportState.initial());
 
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
-  final phoneController = TextEditingController();
-  final subjectController = TextEditingController();
-  final messageController = TextEditingController();
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   Future<void> submitComplaint() async {
     if (!formKey.currentState!.validate()) return;
@@ -22,10 +20,10 @@ class SupportCubit extends Cubit<SupportState> {
     emit(const SupportState.loading());
 
     final complaint = ComplaintModel(
-      name: nameController.text.trim(),
-      phone: phoneController.text.trim(),
-      subject: subjectController.text.trim(),
-      message: messageController.text.trim(),
+      name: '',
+      phone: '',
+      subject: titleController.text.trim(),
+      message: descriptionController.text.trim(),
     );
 
     final response = await api.submitComplaint(complaint);
@@ -42,10 +40,8 @@ class SupportCubit extends Cubit<SupportState> {
   }
 
   void clearForm() {
-    nameController.clear();
-    phoneController.clear();
-    subjectController.clear();
-    messageController.clear();
+    titleController.clear();
+    descriptionController.clear();
   }
 
   void resetState() {
@@ -54,10 +50,8 @@ class SupportCubit extends Cubit<SupportState> {
 
   @override
   Future<void> close() {
-    nameController.dispose();
-    phoneController.dispose();
-    subjectController.dispose();
-    messageController.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
     return super.close();
   }
 }

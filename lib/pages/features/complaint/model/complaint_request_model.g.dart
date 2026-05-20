@@ -9,9 +9,9 @@ part of 'complaint_request_model.dart';
 ComplaintRequestModel _$ComplaintRequestModelFromJson(
   Map<String, dynamic> json,
 ) => ComplaintRequestModel(
-  json['title'] as String?,
-  json['description'] as String?,
-  json['attachmentUrl'] as String?,
+  title: json['title'] as String?,
+  description: json['description'] as String?,
+  attachmentUrl: json['attachmentUrl'] as String?,
 );
 
 Map<String, dynamic> _$ComplaintRequestModelToJson(
